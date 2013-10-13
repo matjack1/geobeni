@@ -1,0 +1,1 @@
+deploy_command: 'wordmove push -t'
