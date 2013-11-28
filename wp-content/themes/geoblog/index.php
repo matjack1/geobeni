@@ -21,13 +21,9 @@ if (!class_exists("Wordless")) {
  * For a list of conditional tags, please see here: http://codex.wordpress.org/Conditional_Tags
  */
 
-if (is_single()) {
-  render_view("posts/single");
-} else if (is_front_page()){
-  render_view("posts/single");
-}else if (is_archive()) {
-  render_view("posts/archive");
+if (is_home()) {
+  render_view("home");
 } else {
-  render_view("posts/404");
+	render_view("post");
 }
 
