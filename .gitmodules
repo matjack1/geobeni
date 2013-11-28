@@ -1,0 +1,4 @@
+[submodule "wordless"]
+  path = wp-content/plugins/wordless
+  url = git@github.com:welaika/wordless.git
+

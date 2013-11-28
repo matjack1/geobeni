@@ -25,7 +25,7 @@ class GeoMashupUIManager {
 	 * @param string $name The class name of the manager.
 	 * @return GeoMashupUIPostManager|GeoMashupUIUserManager|GeoMashupUICommentManager The singleton object.
 	 */
-	public static function &get_instance( $name ) {
+	public static function get_instance( $name ) {
 		static $instances = array();
 
 		if ( ! isset( $instances[$name] ) ) {
@@ -273,7 +273,7 @@ class GeoMashupUIManager {
 					$post_location = intval( $selected_items[0] );
 				} else { 
 					$post_location['id'] = $_POST['geo_mashup_location_id'];
-					list( $lat, $lng ) = split( ',', $_POST['geo_mashup_location'] );
+					list( $lat, $lng ) = explode( ',', $_POST['geo_mashup_location'] );
 					$post_location['lat'] = trim( $lat );
 					$post_location['lng'] = trim( $lng );
 					$post_location['geoname'] = $_POST['geo_mashup_geoname'];
@@ -323,10 +323,11 @@ class GeoMashupUserUIManager extends GeoMashupUIManager {
 	 * @since 1.3
 	 * @uses parent::get_instance()
 	 *
+     * @param string $name The class name, this class by default.
 	 * @return GeoMashupPostUIManager The instance.
 	 */
-	public static function get_instance() {
-		return parent::get_instance( 'GeoMashupUserUIManager' );
+	public static function get_instance( $name = __CLASS__ ) {
+		return parent::get_instance( $name );
 	}
 
 	/**
@@ -346,7 +347,7 @@ class GeoMashupUserUIManager extends GeoMashupUIManager {
 	 *
 	 * init {@link http://codex.wordpress.org/Plugin_API/Action_Reference action}
 	 * called by WordPress.
-	 * 
+	 *
 	 * @since 1.3
 	 * @global array $geo_mashup_options 
 	 * @global string $pagenow The WordPress-supplied requested filename.
@@ -398,16 +399,20 @@ class GeoMashupUserUIManager extends GeoMashupUIManager {
 	}
 
 	/**
-	 * Save a posted user location.
-	 * 
-	 * @since 1.3
-	 * @uses parent::save_posted_object_location()
+	 * Handle old non-strict method calls with only one argument.
 	 *
-	 * @param id $user_id 
+	 * @param string $object_name
+	 * @param null|int $object_id
 	 * @return bool|WP_Error
 	 */
-	public function save_posted_object_location( $user_id ) {
-		return parent::save_posted_object_location( 'user', $user_id );
+	public function save_posted_object_location( $object_name, $object_id = null ) {
+		// resolve old non-strict one argument calls
+		if ( is_null( $object_id ) )
+			$object_id = intval( $object_name );
+
+		// We only know how to save posts
+		$object_name = 'user';
+		return parent::save_posted_object_location( $object_name, $object_id );
 	}
 
 	/**
@@ -465,9 +470,10 @@ class GeoMashupPostUIManager extends GeoMashupUIManager {
 	 * @since 1.3
 	 * @uses parent::get_instance()
 	 *
+     * @param string $name The class name, this class by default.
 	 * @return GeoMashupPostUIManager The instance.
 	 */
-	public static function get_instance() {
+	public static function get_instance( $name = __CLASS__ ) {
 		return parent::get_instance( 'GeoMashupPostUIManager' );
 	}
 
@@ -600,16 +606,20 @@ class GeoMashupPostUIManager extends GeoMashupUIManager {
 	}
 
 	/**
-	 * Save a posted post or page location.
-	 * 
-	 * @since 1.3
-	 * @uses parent::save_posted_object_location()
+	 * Handle old non-strict method calls with only one argument.
 	 *
-	 * @param id $post_id 
+	 * @param string $object_name
+	 * @param null|int $object_id
 	 * @return bool|WP_Error
 	 */
-	public function save_posted_object_location( $post_id ) {
-		return parent::save_posted_object_location( 'post', $post_id );
+	public function save_posted_object_location( $object_name, $object_id = null ) {
+		// resolve old non-strict one argument calls
+		if ( is_null( $object_id ) )
+			$object_id = intval( $object_name );
+
+		// We only know how to save posts
+		$object_name = 'post';
+		return parent::save_posted_object_location( $object_name, $object_id );
 	}
 
 	/**

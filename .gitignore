@@ -1,3 +1,5 @@
 wp-config.php
 Movefile
 *.sql
+wp-content/themes/geoblog/tmp/*
+
