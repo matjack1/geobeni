@@ -2,4 +2,6 @@ wp-config.php
 Movefile
 *.sql
 wp-content/themes/geoblog/tmp/*
+wp-content/themes/geoblog/theme/.sass-cache/
+wp-content/uploads/*
 

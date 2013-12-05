@@ -6,6 +6,10 @@ function add_custom_post_types() {
    * function, or the Wordless new_post_type() helper.
    */
 
+  new_post_type(array(
+      "singular" => 'bene_confiscato',
+      "plural" => 'beni_confiscati'
+    ));
   // new_post_type("portfolio_work", array('title', 'editor'));
 }
 
@@ -16,6 +20,15 @@ function add_custom_taxonomies() {
    */
 
   // new_taxonomy("work_type", array('portfolio_work'));
+  new_taxonomy(array(
+      "singular" => 'tipologia',
+      "plural" => 'tipologie'
+    ), 'bene_confiscato');
+
+  new_taxonomy(array(
+      "singular" => 'città',
+      "plural" => 'città'
+    ), 'bene_confiscato');
 }
 
 add_action('init', 'add_custom_post_types');
