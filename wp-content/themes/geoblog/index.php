@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_ERROR);
 /*
  * Making sure Wordless plugin is enabled
  */
