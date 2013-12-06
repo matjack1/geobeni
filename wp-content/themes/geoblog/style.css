@@ -6,3 +6,50 @@ Author URI: http://welaika.com/
 Version: 1.0
 
 */
+html {
+overflow-y: hidden;
+overflow-x: hidden;
+height: 100%;
+}
+body {
+		
+}
+div {
+	width:100%;
+	float:left;
+}
+#site-header{
+		background-image: url(C:\wamp\www\wp-includes\images\titolo.png);
+		background-repeat: no-repeat;
+		opacity:0.3;
+	}
+#titolo{
+		height: 200px;
+		background-image: url(C:\wamp\www\wp-includes\imagestitolo.png);
+		background-repeat: no-repeat;
+		opacity:0.3;
+	}
+	
+#menu {
+		height: 70%;
+		float:right;
+	}
+#sopra {
+		height: 38px;
+		background-image: url(sopra_menu.png);
+		background-repeat: no-repeat;
+		opacity:0.3;
+	}
+#sfondo {
+		height: 70%;
+		background-image: url(sfondo_menu.png);
+		background-repeat: repeat-y;
+		opacity:0.3;
+	}
+	
+#sotto {
+		height: 10px;
+		background-image: url(sotto_menu.png);
+		background-repeat: no-repeat;
+		opacity:0.3;
+	}
