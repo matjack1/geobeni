@@ -21,9 +21,5 @@ if (!class_exists("Wordless")) {
  * For a list of conditional tags, please see here: http://codex.wordpress.org/Conditional_Tags
  */
 
-if (is_home()) {
-  render_view("home");
-} else {
-	render_view("post");
-}
+render_view("home");
 

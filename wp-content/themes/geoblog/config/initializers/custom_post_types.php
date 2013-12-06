@@ -25,13 +25,19 @@ function add_custom_taxonomies() {
       "plural" => 'tipologie'
     ), 'bene_confiscato');
 
-  new_taxonomy(array(
-      "singular" => 'città',
-      "plural" => 'città'
-    ), 'bene_confiscato');
+  register_taxonomy(
+    'citta', 
+    'bene_confiscato', 
+    array(
+      'hierarchical' => true,
+      'labels' => array(
+        'name' => 'Città',
+        'singular_name' => 'Città'
+      )
+    )
+  );
 }
 
 add_action('init', 'add_custom_post_types');
 add_action('init', 'add_custom_taxonomies');
-
 

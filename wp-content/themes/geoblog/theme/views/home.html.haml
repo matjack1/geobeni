@@ -3,4 +3,25 @@ home
 - $beni = latest_posts_of_type('bene_confiscato')
 
 = GeoMashup::map(array('map_content' => $beni))
-= GeoMashup::list_located_posts(array('map_content' => $beni))
+
+- $tipologie = get_terms('tipologia')
+%ul
+  - foreach($tipologie as $tipologia)
+    %li= $tipologia->name
+    - $citta = get_terms('citta', array('parent' => 0, 'hide_empty' => false))
+    %ul
+    - foreach($citta as $citta_singular)
+      - $tipologia_relation = array('taxonomy' => 'tipologia', 'terms' => $tipologia->slug, 'field' => 'slug')
+      - $citta_relation = array('taxonomy' => 'citta', 'terms' => $citta_singular->slug, 'field' => 'slug', 'include_children' => false)
+      - $tax_query = array($tipologia_relation, $citta_relation)
+      - $args = array('post_type' => 'bene_confiscato', 'tax_query' => $tax_query)
+      - $beni = new WP_Query($args)
+      - if($beni-> post_count > 0)
+        %li= $citta_singular->name
+        %ul
+          - while ($beni->have_posts())
+            - $beni->the_post()
+            %li
+              = the_title()
+              = GeoMashup::show_on_map_link()
+
