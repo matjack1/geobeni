@@ -36,6 +36,11 @@ function add_custom_taxonomies() {
       )
     )
   );
+
+  new_taxonomy(array(
+    "singular" => 'stato',
+    "plural" => 'stato'
+  ), 'bene_confiscato');
 }
 
 add_action('init', 'add_custom_post_types');
