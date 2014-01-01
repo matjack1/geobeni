@@ -283,15 +283,15 @@
 			"file": "tests/test-basic.php",
 			"settings":
 			{
-				"buffer_size": 92032,
+				"buffer_size": 91277,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": ".travis.yml",
+			"file": "functions.php",
 			"settings":
 			{
-				"buffer_size": 274,
+				"buffer_size": 68069,
 				"line_ending": "Unix"
 			}
 		},
@@ -299,7 +299,7 @@
 			"file": "readme.txt",
 			"settings":
 			{
-				"buffer_size": 33176,
+				"buffer_size": 33588,
 				"line_ending": "Unix"
 			}
 		},
@@ -307,7 +307,7 @@
 			"file": "simple_fields.php",
 			"settings":
 			{
-				"buffer_size": 176073,
+				"buffer_size": 176326,
 				"line_ending": "Unix"
 			}
 		},
@@ -532,6 +532,7 @@
 	},
 	"file_history":
 	[
+		"/Users/bonny/Dropbox/Plugins/GIT/Simple-Fields/.travis.yml",
 		"/Users/bonny/Dropbox/Plugins/GIT/Simple-Fields/tests/bootstrap.php",
 		"/Users/bonny/Dropbox/Plugins/GIT/Simple-Fields/run-tests.command",
 		"/Users/bonny/Library/Caches/Cleanup At Startup/Transmit/A02D7E89-4533-416D-B80A-13F788224E5D/beta.texttv.nu",
@@ -658,8 +659,7 @@
 		"/Users/bonny/Desktop/håll tiden med sj/widget.html",
 		"/Users/bonny/Library/Caches/Cleanup At Startup/Transmit/08DC7F21-3861-48E5-846B-193343DEDE39/template-widget.php",
 		"/Users/bonny/Library/Caches/Cleanup At Startup/Transmit/8532C0A7-2910-4826-A204-F4FE3EBC071F/.htaccess",
-		"/Users/bonny/.ssh/known_hosts",
-		"/Users/bonny/Dropbox/Webb/bonnys-wordpress-stuff/ep-theme/js/selectivizr.js"
+		"/Users/bonny/.ssh/known_hosts"
 	],
 	"find":
 	{
@@ -849,36 +849,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 92032,
+						"buffer_size": 91277,
 						"regions":
 						{
-							"bookmarks":
-							{
-								"flags": 144,
-								"icon": "bookmark",
-								"regions":
-								[
-									[
-										40875,
-										40875
-									],
-									[
-										41539,
-										41539
-									],
-									[
-										44999,
-										44999
-									]
-								],
-								"scope": "bookmarks"
-							}
 						},
 						"selection":
 						[
 							[
-								39104,
-								39104
+								0,
+								0
 							]
 						],
 						"settings":
@@ -985,19 +964,19 @@
 				},
 				{
 					"buffer": 1,
-					"file": ".travis.yml",
+					"file": "functions.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 274,
+						"buffer_size": 68069,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								104,
-								104
+								12991,
+								12991
 							]
 						],
 						"settings":
@@ -1091,10 +1070,11 @@
 								"Ruby on Rails": "ruby"
 							},
 							"sublimelinter_wrap_find": true,
-							"syntax": "Packages/YAML/YAML.tmLanguage"
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 5854.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -1106,7 +1086,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 33176,
+						"buffer_size": 33588,
 						"regions":
 						{
 						},
@@ -1225,15 +1205,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 176073,
+						"buffer_size": 176326,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								211,
-								211
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1512,6 +1492,10 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"func",
+				"functions.php"
+			],
 			[
 				"read",
 				"readme.txt"
@@ -1803,10 +1787,6 @@
 			[
 				"readme",
 				"readme.txt"
-			],
-			[
-				"func",
-				"functions.php"
 			],
 			[
 				"scrip",
