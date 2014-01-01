@@ -1,4 +1,7 @@
 [submodule "wordless"]
   path = wp-content/plugins/wordless
   url = git@github.com:welaika/wordless.git
+[submodule "geo-mashup-custom"]
+  path = wp-content/plugins/geo-mashup-custom
+  url = https://github.com/kuching/geo-mashup-custom.git
 
