@@ -19,4 +19,3 @@ function my_geo_mashup_locations_json_filter( $json_properties, $queried_object 
 add_filter( 'geo_mashup_locations_json_object', 'my_geo_mashup_locations_json_filter', 10, 2 );
 
 ?>
-

@@ -1,8 +1,8 @@
 home
 
 - $beni = latest_posts_of_type('bene_confiscato')
-
-= GeoMashup::map(array('map_content' => $beni))
+- $open_info = isset($_GET['open_object_id']) ? true : false;
+= GeoMashup::map(array('map_content' => $beni, 'auto_info_open' => $open_info))
 
 - $tipologie = get_terms('tipologia')
 %ul
@@ -22,8 +22,8 @@ home
           - while ($beni->have_posts())
             - $beni->the_post()
             %li
-              = the_title()
-              = GeoMashup::show_on_map_link()
+              %a(class="geopost" data-id="#{the_id()}")
+                = the_title()
 
 %p
   = GeoMashup::term_legend('check_all=false')
