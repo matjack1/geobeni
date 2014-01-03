@@ -9,17 +9,11 @@ if (!class_exists("Wordless")) {
   die();
 }
 
-/*
- * In this page, you need to setup Wordless routing: you first
- * determine the type of the page using WordPress conditional tags,
- * and then delegate the rendering to some particular view using
- * the `render_view()` helper.
- *
- * To specify a layout other than the default one, please pass it as
- * the second parameter to the `render_view()` method.
- *
- * For a list of conditional tags, please see here: http://codex.wordpress.org/Conditional_Tags
- */
-
-render_view("home");
+if(is_home()) {
+  render_view("home");
+} elseif(is_single()) {
+  render_view("post");
+} else {
+  render_view("404");
+}
 

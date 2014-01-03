@@ -1,3 +1,12 @@
-post
+- global $post
 = GeoMashup::map()
-= GeoMashup::list_located_posts()
+
+- $projects = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Progetti', $use_name = true, $return_format  = 2)
+- foreach($projects as $project)
+  %strong= $project['Titolo Progetto']
+  = $project['Testo Progetto']
+
+- $video = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Video', $use_name = true, $return_format  = 1)
+- foreach($video['Video Embed'] as $video)
+  = $video
+
