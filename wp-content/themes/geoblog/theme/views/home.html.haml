@@ -1,30 +1,7 @@
-home
-
 - $beni = latest_posts_of_type('bene_confiscato')
 - $open_info = isset($_GET['open_object_id']) ? true : false;
 = GeoMashup::map(array('map_content' => $beni, 'auto_info_open' => $open_info))
 
-- $tipologie = get_terms('tipologia')
-%ul
-  - foreach($tipologie as $tipologia)
-    %li= $tipologia->name
-    - $citta = get_terms('citta', array('hide_empty' => false))
-    %ul
-    - foreach($citta as $citta_singular)
-      - $tipologia_relation = array('taxonomy' => 'tipologia', 'terms' => $tipologia->slug, 'field' => 'slug')
-      - $citta_relation = array('taxonomy' => 'citta', 'terms' => $citta_singular->slug, 'field' => 'slug', 'include_children' => false)
-      - $tax_query = array($tipologia_relation, $citta_relation)
-      - $args = array('post_type' => 'bene_confiscato', 'tax_query' => $tax_query)
-      - $beni = new WP_Query($args)
-      - if($beni-> post_count > 0)
-        %li= $citta_singular->name
-        %ul
-          - while ($beni->have_posts())
-            - $beni->the_post()
-            %li
-              %a(class="geopost" data-id="#{the_id()}")
-                = the_title()
-
-%p
-  = GeoMashup::term_legend('check_all=false')
+= render_partial('geo-menu')
+= render_partial('geo-legend')
 
