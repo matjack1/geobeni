@@ -1,12 +1,11 @@
 - global $post
 = GeoMashup::map()
 
-- $projects = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Progetti', $use_name = true, $return_format  = 2)
-- foreach($projects as $project)
-  %strong= $project['Titolo Progetto']
-  = $project['Testo Progetto']
+- $tab = $_GET['tab'] ? $_GET['tab'] : 'history'
 
-- $video = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Video', $use_name = true, $return_format  = 1)
-- foreach($video['Video Embed'] as $video)
-  = $video
+= render_partial('geopost/'.$tab)
+
+= link_to('Storia', get_permalink().'?tab=history')
+= link_to('Oggi', get_permalink().'?tab=today')
+= link_to('Video', get_permalink().'?tab=video')
 

@@ -1,0 +1,6 @@
+- global $post
+
+%h2 Storia
+- $geopost_data = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato', $use_name = true, $return_format  = 2)
+= $geopost_data[0]['Storia']
+

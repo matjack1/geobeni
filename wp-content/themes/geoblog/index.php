@@ -11,6 +11,8 @@ if (!class_exists("Wordless")) {
 
 if(is_home()) {
   render_view("home");
+} elseif(is_page()) {
+  render_view("page");
 } elseif(is_single()) {
   render_view("post");
 } else {

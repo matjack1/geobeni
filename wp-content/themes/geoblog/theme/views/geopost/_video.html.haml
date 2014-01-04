@@ -1,0 +1,7 @@
+- global $post
+
+%h2 Video
+- $video = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Video', $use_name = true, $return_format  = 1)
+- foreach($video['Video Embed'] as $video)
+  = $video
+
