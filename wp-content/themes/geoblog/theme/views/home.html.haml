@@ -1,7 +1,8 @@
-- $beni = latest_posts_of_type('bene_confiscato')
-- $open_info = isset($_GET['open_object_id']) ? true : false;
-= GeoMashup::map(array('map_content' => $beni, 'auto_info_open' => $open_info))
+.map
+  - $beni = latest_posts_of_type('bene_confiscato')
+  - $open_info = isset($_GET['open_object_id']) ? true : false;
+  = GeoMashup::map(array('map_content' => $beni, 'auto_info_open' => $open_info))
 
-= render_partial('geo-menu')
-= render_partial('geo-legend')
+.geo-menu= render_partial('geo-menu')
+.geo-legend= render_partial('geo-legend')
 
