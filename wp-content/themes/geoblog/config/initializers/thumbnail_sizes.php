@@ -13,11 +13,9 @@ function setup_thumbnail_sizes() {
    * Add additional thumbnail sizes here
    */
 
-  // add_image_size("icon", 32, 32, true);
+  add_image_size("infowindow", 100, 300, true);
 }
 
 add_action('after_setup_theme', 'add_thumbnails_support');
 add_action('after_setup_theme', 'setup_thumbnail_sizes');
-
-
 
