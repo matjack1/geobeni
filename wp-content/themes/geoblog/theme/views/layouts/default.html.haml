@@ -1,7 +1,7 @@
 !!! 5
 %html(html_attrs())
   %head= render_partial("layouts/head")
-  %body
+  %body(class="#{body_classes()}")
     .page-wrapper
       = render_partial("layouts/header")
       %section.site-content= wl_yield()

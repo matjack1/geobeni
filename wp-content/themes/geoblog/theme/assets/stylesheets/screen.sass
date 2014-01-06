@@ -6,26 +6,19 @@ html, body
   width: 100%
   height: 100%
 
-header
-  position: absolute
-  z-index: 1
-
-  h1
-    top: 30px
-    left: 30px
-    background-image: url(../images/titolo.png)
-    height: 150px
-    width: 703px
-    text-indent: -9999px
-    position: absolute
+h1.logo
+  background-image: url(../images/titolo.png)
+  height: 150px
+  width: 703px
+  text-indent: -9999px
 
 .libera
   background-image: url(../images/libera.jpg)
+  height: 140px
+  width: 140px
   position: absolute
   top: 30px
   right: 30px
-  height: 140px
-  width: 140px
   z-index: 1
 
 .page-wrapper
@@ -33,47 +26,60 @@ header
   font-size: 13px
   color: #333
 
+  @import "tinymce"
+
+.home
+  h1.logo
+    position: absolute
+    top: 30px
+    left: 30px
+    z-index: 1
+
   .gm-map iframe
     position: absolute
 
-  .geo-menu
-    position: absolute
-    bottom: 60px
-    left: 30px
-    background-color: rgba(255, 255, 255, 0.7)
-    border: 1px solid black
-    padding: 5px
-    +box-shadow()
-    h3
-      font-weight: bold
-      font-size: 1.4em
-    h4
-      font-weight: bold
-      font-size: 1.2em
-    h5
-      font-weight: bold
-    ul.provinces
-      display: none
-      &:first-of-type
-        display: block
+.single-bene_confiscato
+  .site-content
+    padding-bottom: 60px
 
-  .geo-legend
-    position: absolute
-    bottom: 60px
-    right: 30px
-    background-color: rgba(255, 255, 255, 0.7)
-    border: 1px solid black
-    padding: 5px
-    +box-shadow()
+    .info
+      float: left
 
+.geo-menu
+  position: absolute
+  bottom: 60px
+  left: 30px
+  background-color: rgba(255, 255, 255, 0.7)
+  border: 1px solid black
+  padding: 5px
+  +box-shadow()
+  h3
+    font-weight: bold
+    font-size: 1.4em
+  h4
+    font-weight: bold
+    font-size: 1.2em
+  h5
+    font-weight: bold
+  ul.provinces
+    display: none
+    &:first-of-type
+      display: block
   .geopost
     cursor: pointer
     text-decoration: underline
 
-  @import "tinymce"
+.geo-legend
+  position: absolute
+  bottom: 60px
+  right: 30px
+  background-color: rgba(255, 255, 255, 0.7)
+  border: 1px solid black
+  padding: 5px
+  +box-shadow()
 
 footer
-  position: absolute
+  position: fixed
   bottom: 0
   width: 100%
   text-align: center

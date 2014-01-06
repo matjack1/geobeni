@@ -14,7 +14,7 @@ if(is_home()) {
 } elseif(is_page()) {
   render_view("page");
 } elseif(is_single()) {
-  render_view("post");
+  render_view("geopost");
 } else {
   render_view("404");
 }
