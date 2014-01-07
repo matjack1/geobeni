@@ -1,0 +1,7 @@
+- global $post
+
+%h2 Foto
+- $photos = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Foto', $use_name = true, $return_format  = 1)
+- foreach($photos['Foto'] as $photo)
+  = wp_get_attachment_image($photo)
+
