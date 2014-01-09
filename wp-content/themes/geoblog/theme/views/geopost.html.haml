@@ -1,16 +1,17 @@
 - global $post
 
 .info
-  = the_title()
+  %h2= the_title()
   = GeoMashup::map()
 
 - $tab = $_GET['tab'] ? $_GET['tab'] : 'history'
 .tabs
+  .navigation
+    = link_to('Storia', get_permalink().'?tab=history', selected_tab('history', $tab))
+    = link_to('Oggi', get_permalink().'?tab=today', selected_tab('today', $tab))
+    = link_to('Foto', get_permalink().'?tab=photo', selected_tab('photo', $tab))
+    = link_to('Video', get_permalink().'?tab=video', selected_tab('video', $tab))
+
   .content
     = render_partial('geopost/'.$tab)
-  .navigation
-    = link_to('Storia', get_permalink().'?tab=history')
-    = link_to('Oggi', get_permalink().'?tab=today')
-    = link_to('Foto', get_permalink().'?tab=photo')
-    = link_to('Video', get_permalink().'?tab=video')
 

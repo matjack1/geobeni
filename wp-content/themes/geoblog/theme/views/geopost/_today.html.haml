@@ -1,8 +1,16 @@
 - global $post
 
-%h2 Oggi
-- $projects = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Progetti', $use_name = true, $return_format  = 2)
-- foreach($projects as $project)
-  %strong= $project['Titolo Progetto']
-  = $project['Testo Progetto']
+.sidebar
+  %h2 Oggi
+  - $projects = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Progetti', $use_name = true, $return_format  = 2)
+  %h3 Progetti
+  %ul
+    - foreach($projects as $project)
+      %li= $project['Titolo Progetto']
+
+
+.content
+  - foreach($projects as $project)
+    %h3= $project['Titolo Progetto']
+    = $project['Testo Progetto']
 
