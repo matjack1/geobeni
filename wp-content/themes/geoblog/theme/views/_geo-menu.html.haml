@@ -1,11 +1,11 @@
 %ul(class='typologies')
   - $typologies = get_terms('tipologia')
   - foreach($typologies as $typology)
-    %li(class='typology')
+    %li(class="typology typology-#{$typology->slug}")
       %h3
         = $typology->name
 
-    %ul(class='provinces')
+    %ul(class="provinces provinces-#{$typology->slug}")
       - $provinces = get_terms('citta', array('hide_empty' => false, 'parent' => 0))
       - foreach($provinces as $province)
         - if(province_with_geoposts($province, $typology))
@@ -23,4 +23,3 @@
                 %li
                   %a(class="geopost" data-id="#{the_id()}")
                     = the_title()
-
