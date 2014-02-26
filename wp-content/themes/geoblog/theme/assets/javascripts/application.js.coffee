@@ -9,3 +9,4 @@ typology_switcher = ->
 $(document).ready ->
   typology_switcher()
 
+
