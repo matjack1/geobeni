@@ -15,5 +15,17 @@ GeoMashup.addAction('loadedMap', function(properties, map) {
   parent.jQuery('.geopost').click(function() {
     GeoMashup.clickObjectMarker(jQuery(this).data('id'), 1);
   });
+  $(".post-location-info h2 a").fancybox({
+    maxWidth: 800,
+    maxHeight: 600,
+    fitToView: false,
+    width: "70%",
+    height: "70%",
+    autoSize: false,
+    closeClick: false,
+    openEffect: "none",
+    closeEffect: "none"
+  });
+
 });
 
