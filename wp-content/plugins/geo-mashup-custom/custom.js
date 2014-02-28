@@ -16,4 +16,3 @@ GeoMashup.addAction('loadedMap', function(properties, map) {
     GeoMashup.clickObjectMarker(jQuery(this).data('id'), 1);
   });
 });
-
