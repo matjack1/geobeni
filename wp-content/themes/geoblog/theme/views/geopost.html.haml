@@ -6,13 +6,13 @@
 
 - $tab = $_GET['tab'] ? $_GET['tab'] : 'history'
 .tabs
-  .tab_storia
+  .tab.tab_storia
     = link_to('Storia', get_permalink().'?tab=history', selected_tab('history', $tab))
-  .tab_oggi
+  .tab.tab_oggi
     = link_to('Oggi', get_permalink().'?tab=today', selected_tab('today', $tab))
-  .tab_foto
+  .tab.tab_foto
     = link_to('Foto', get_permalink().'?tab=photo', selected_tab('photo', $tab))
-  .tab_video
+  .tab.tab_video
     = link_to('Video', get_permalink().'?tab=video', selected_tab('video', $tab))
 
 .content

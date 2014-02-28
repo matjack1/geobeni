@@ -5,12 +5,10 @@
 
 +global-reset
 
-
 html, body
   width: 100%
   height: 100%
-  overflow-x: hidden
-  overflow-y: hidden
+  overflow: hidden
 
 
 h2
@@ -26,7 +24,7 @@ h1.logo
   top: 20px
   left: 20px
   font-weight: bolder
-  font-family: "Impact", "Arial", sans-serif
+  font-family: "Anton", sans-serif
   color: white 
   opacity: 0.3  
   text-shadow: -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black, 2px 2px 0 black
@@ -35,10 +33,10 @@ h1.logo
 
 .beni     
   position: absolute
-  top: 90px
-  left: 662px
+  top: 75px
+  left: 741px
   font-weight: bold
-  font-family: "Impact", "Arial", sans-serif
+  font-family: "Anton", sans-serif
   display: inline-block
   color: white 
   opacity: 0.3  
@@ -47,10 +45,10 @@ h1.logo
   z-index: 1
 .confiscati     
   position: absolute
-  top: 113px
-  left: 662px
+  top: 100px
+  left: 741px
   font-weight: bold
-  font-family: "Impact", "Arial", sans-serif
+  font-family: "Anton", sans-serif
   display: inline-block
   color: white 
   opacity: 0.3  
@@ -59,10 +57,10 @@ h1.logo
   z-index: 1
 .piemonte    
   position: absolute
-  top: 139px
-  left: 662px
+  top: 127px
+  left: 741px
   font-weight: bold
-  font-family: "Impact", "Arial", sans-serif
+  font-family: "Anton", sans-serif
   display: inline-block
   color: white 
   opacity: 0.3  
@@ -84,7 +82,7 @@ h1.logo
 .libera
   background-image: url(../images/libera.jpg)
   height: 140px
-  width: 140px      
+  width: 140px
   position: absolute
   top: 30px
   right: 30px
@@ -103,19 +101,16 @@ h1.logo
     top: 20px
     left: 20px
     font-weight: bolder
-    font-family: "Impact", "Arial", sans-serif
+    font-family: "Anton", sans-serif
     color: white 
     opacity: 0.3  
     text-shadow: -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black, 2px 2px 0 black
     font-size: 12em
     z-index: 1
-
-
   .gm-map iframe
     position: absolute
 
 .single-bene_confiscato
-  
   .site-content
     position: absolute
     padding-bottom: 60px
@@ -138,47 +133,20 @@ h1.logo
       bottom: -36px
       right: 46px
       font-size: 1.2em  
-      a:link
+      a:link, a:visited, a:hover, a:active
         color : black
         text-decoration: none
-      a:visited
-        color : black
-        text-decoration: none
-      a:hover
-        color : black
-        text-decoration: none
-      a:active
-        color : black
-        text-decoration: none
-      .tab_storia   
+      .tab 
         padding: 10px
         margin-right: 10px
         display: inline-block
         background-color: orange
         +single-box-shadow(#333333,0px,2px,4px,false,false)
         +border-bottom-radius(10px)
+      .tab_storia
         bottom: 70px
-      .tab_oggi
-        padding: 10px
-        margin-right: 10px
-        display: inline-block
-        background-color: orange
-        +single-box-shadow(#333333,0px,2px,4px,false,false)
-        +border-bottom-radius(10px)
-      .tab_foto
-        padding: 10px
-        margin-right: 10px
-        display: inline-block
-        background-color: orange
-        +single-box-shadow(#333333,0px,2px,4px,false,false)
-        +border-bottom-radius(10px)
       .tab_video
-        padding: 10px
-        display: inline-block
-        background-color: orange
-        +single-box-shadow(#333333,0px,2px,4px,false,false)
-        +border-bottom-radius(10px)
-
+        margin-right: 0
     .content
       position: absolute
       overflow-y: auto
@@ -186,8 +154,6 @@ h1.logo
       left: 285px
       right: 50px
       bottom: 40px
-      
-
   .sidebar
     float: left
 
@@ -208,7 +174,8 @@ h1.logo
       top: 0
       +single-box-shadow(#333333,0px,-2px,4px,false,false)
       +border-top-radius(7px)
-    .typology-azienda
+      cursor: pointer
+    .typology-aziende
       position: absolute
       background-color: yellow
       left: 1%
@@ -224,16 +191,20 @@ h1.logo
     max-height: 900%
     width: 189px
     +single-box-shadow(#333333,0px,2px,4px,false,false)
-  .provinces-azienda
+  .provinces-aziende  
     position: absolute
     background-color: yellow
     overflow-y: auto
     line-height: 1.5em 
+    border-bottom: 10px solid yellow
+    border-top: 10px solid yellow
   .provinces-immobili
     position: absolute
     background-color: orange
     overflow-y: auto
     line-height: 1.5em 
+    border-bottom: 10px solid orange
+    border-top: 10px solid orange
   h3
     font-weight: bold
     font-size: 1.4em
@@ -252,7 +223,6 @@ h1.logo
   .geopost
     cursor: pointer
     text-decoration: underline
-  
 
 .geo-legend
   position: absolute
@@ -272,7 +242,6 @@ footer
   background-color: black
   font-size: 1.8em
   padding: 10px 10
-
   .xmedialab
     background-image: url(../images/xmedialab.jpg)
     position: relative
@@ -301,5 +270,5 @@ footer
     color: red
     display: inline-block
 
-.pagina 
+.page .site-content
   position: absolute  
