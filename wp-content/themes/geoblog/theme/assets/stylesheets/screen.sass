@@ -2,7 +2,6 @@
 @font-face
   font-family: 'special'
   src: url('../fonts/SpecialElite.ttf')
-
 +global-reset
 
 html, body
@@ -21,32 +20,13 @@ h3
 
 h1.logo
   position: absolute
-  top: 20px
+  background-image: url(../images/titolo.png)
   left: 20px
-  font-weight: bolder
-  font-family: "Anton", sans-serif
-  color: white 
-  opacity: 0.3  
-  text-shadow: -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black, 2px 2px 0 black
-  font-size: 12em
+  width: 881px
+  height: 200px
+  opacity: 0.5
   z-index: 1
-.titolo
-  position: absolute
-  left: 741px
-  font-weight: bold
-  font-family: "Anton", sans-serif
-  display: inline-block
-  color: white 
-  opacity: 0.3  
-  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px -1px 0 black
-  font-size: 2em
-  z-index: 1
-.beni     
-  top: 75px
-.confiscati     
-  top: 100px
-.piemonte    
-  top: 127px
+  text-indent: -999999px
 
 #details 
   position: absolute
@@ -69,7 +49,7 @@ h1.logo
   z-index: 1
 
 .page-wrapper
-  font-family: "special", "Arial", sans-serif
+  font-family: "special",  sans-serif
   font-size: 13px
   color: #333
 
@@ -78,15 +58,13 @@ h1.logo
 .home
   h1.logo 
     position: absolute
-    top: 20px
+    background-image: url(../images/titolo.png)
     left: 20px
-    font-weight: bolder
-    font-family: "Anton", sans-serif
-    color: white 
-    opacity: 0.3  
-    text-shadow: -2px -2px 0 black, 2px -2px 0 black, -2px 2px 0 black, 2px 2px 0 black
-    font-size: 12em
+    width: 881px
+    height: 200px
+    opacity: 0.5
     z-index: 1
+    text-indent: -999999px
   .gm-map iframe
     position: absolute
 
@@ -228,27 +206,39 @@ footer
     display: inline-block
     height: 25px
     top: 3px
-    left: 10px
-    width: 94px
+    left: 5px
+    width: 200px
     bottom: 0px
-  .geoblog
-    color: yellow
-    left: 110px
+    background-repeat: no-repeat
+  .pagine-contenitore
+    position: relative  
+    float: right
+    right: 10px
     top: 5px
-    position: absolute
     display: inline-block
-  .storia
-    position: absolute
-    left: 50%
-    top: 5px
-    color: orange
-    display: inline-block
-  .osservatorio
-    position: absolute
-    right: 20px
-    top: 5px
-    color: red
-    display: inline-block
-
+    .pagine
+      position: relative  
+      display: inline-block
+    .geoblog
+      color: yellow
+    .storia
+      color: orange
+    .osservatorio
+      color: #e3078d
+.page
+  background-color: #d94c3a
 .page .site-content
   position: absolute  
+  background-color: #8fb59c
+  padding: 10px
+  top: 200px
+  left: 50px
+  right: 50px
+  bottom: 60px
+  line-height: 20px
+  overflow: auto
+  +single-box-shadow()
+  h1
+    font-weight: bolder
+    font-size: 1.2em
+    line-height: 30px

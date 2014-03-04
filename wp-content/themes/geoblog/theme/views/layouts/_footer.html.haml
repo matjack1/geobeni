@@ -1,10 +1,11 @@
 .xmedialab
-.geoblog
-- $geoblog_what = "Che cos'è il Geoblog?"
-= link_to($geoblog_what, get_permalink(get_page_by_title($geoblog_what)), array('class' => 'geoblog'))
-.storia
-- $geoblog_history = "Storia del Geoblog"
-= link_to($geoblog_history, get_permalink(get_page_by_title($geoblog_history)), array('class' => 'storia'))
-.osservatorio
-- $observatory = "Osservatorio"
-= link_to($observatory, get_permalink(get_page_by_title($observatory)), array('class' => 'osservatorio'))
+.pagine-contenitore 
+  .pagine.geoblog
+  - $geoblog_what = "Che cos'è il Geoblog?"
+  = link_to($geoblog_what, get_permalink(get_page_by_title($geoblog_what)), array('class' => 'geoblog'))
+  .pagine.storia
+  - $geoblog_history = "Storia del Geoblog"
+  = link_to($geoblog_history, get_permalink(get_page_by_title($geoblog_history)), array('class' => 'storia'))
+  .pagine.osservatorio
+  - $observatory = "Osservatorio"
+  = link_to($observatory, get_permalink(get_page_by_title($observatory)), array('class' => 'osservatorio'))
