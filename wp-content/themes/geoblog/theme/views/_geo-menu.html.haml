@@ -9,17 +9,19 @@
       - $provinces = get_terms('citta', array('hide_empty' => false, 'parent' => 0))
       - foreach($provinces as $province)
         - if(province_with_geoposts($province, $typology))
-          %h4= $province->name
+          %h4.province= $province->name
 
-        - $cities = get_terms('citta', array('parent' => $province->term_id));
-        - foreach($cities as $city)
-          - $geoposts = city_geoposts($city, $typology)
-          - if($geoposts->post_count > 0)
-            %li
-              %h5= $city->name
-            %ul
-              - while ($geoposts->have_posts())
-                - $geoposts->the_post()
+          .cities
+            - $cities = get_terms('citta', array('parent' => $province->term_id));
+            - foreach($cities as $city)
+              - $geoposts = city_geoposts($city, $typology)
+              - if($geoposts->post_count > 0)
                 %li
-                  %a(class="geopost" data-id="#{the_id()}")
-                    = the_title()
+                  %h5= $city->name
+                %ul
+                  - while ($geoposts->have_posts())
+                    - $geoposts->the_post()
+                    %li
+                      %a(class="geopost" data-id="#{the_id()}")
+                        = the_title()
+
