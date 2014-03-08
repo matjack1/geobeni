@@ -4,4 +4,4 @@ Movefile
 wp-content/themes/geoblog/tmp/*
 wp-content/themes/geoblog/theme/.sass-cache/
 wp-content/uploads/*
-.DS_Store
+corsopml

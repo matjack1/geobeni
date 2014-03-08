@@ -28,10 +28,10 @@ h1.logo
   z-index: 1
   text-indent: -999999px
 
-#details 
+#details
   position: absolute
   z-index: 2
-  padding: 20px 
+  padding: 20px
   left: 1%
   right: 1%
   top: 200px
@@ -50,14 +50,14 @@ h1.logo
   z-index: 1
 
 .page-wrapper
-  font-family: "special",  sans-serif
+  font-family: "special", sans-serif
   font-size: 13px
   color: #333
 
   @import "tinymce"
 
 .home
-  h1.logo 
+  h1.logo
     position: absolute
     background-image: url(../images/titolo.png)
     left: 20px
@@ -82,18 +82,18 @@ h1.logo
     +single-box-shadow()
     +border-radius(20px)
     .info
-      position: absolute  
+      position: absolute
       padding: 30px
     .tabs
       position: absolute
       padding: 0px
       bottom: -36px
       right: 46px
-      font-size: 1.2em  
+      font-size: 1.2em
       a:link, a:visited, a:hover, a:active
         color: black
         text-decoration: none
-      .tab 
+      .tab
         padding: 10px
         margin-right: 10px
         display: inline-block
@@ -116,12 +116,12 @@ h1.logo
 
 .geo-menu
   position: absolute
-  width: 20%  
+  width: 20%
   top: 250px
-  left: 1%  
+  left: 1%
   padding: 5px
   opacity: 0.7
-  .typologies 
+  .typologies
     position: absolute
     padding-top: 38px
     width: 184px
@@ -141,7 +141,7 @@ h1.logo
       left: 119px
   .provinces
     position: absolute
-    line-height: 1.5em 
+    line-height: 1.5em
     overflow-y: auto
     +border-bottom-radius(7px)
     padding: 20px
@@ -157,6 +157,10 @@ h1.logo
     background-color: orange
     border-bottom: 10px solid orange
     border-top: 10px solid orange
+  .province
+    cursor: pointer
+  .cities
+    display: none
   h3
     font-weight: bold
     font-size: 1.4em
@@ -205,13 +209,13 @@ footer
     bottom: 0px
     background-repeat: no-repeat
   .pagine-contenitore
-    position: relative  
+    position: relative
     float: right
     right: 10px
     top: 5px
     display: inline-block
     .pagine
-      position: relative  
+      position: relative
       display: inline-block
     .geoblog
       color: yellow
