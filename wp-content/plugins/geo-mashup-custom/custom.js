@@ -16,3 +16,9 @@ GeoMashup.addAction('loadedMap', function(properties, map) {
     GeoMashup.clickObjectMarker(jQuery(this).data('id'), 1);
   });
 });
+
+GeoMashup.addAction('selectedMarker', function(opts, selected_marker, map) {
+  var latlon = new mxn.LatLonPoint(selected_marker.location.lat + 0.3, selected_marker.location.lon);
+  map.setCenter(latlon);
+});
+
