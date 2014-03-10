@@ -6,11 +6,11 @@
   %h3 Progetti
   %ul
     - foreach($projects as $project)
-      %li= $project['Titolo Progetto']
-
+      %li.progetto{:name => $nome} = $project['Titolo Progetto']
 
 .content
   - foreach($projects as $project)
-    %h3= $project['Titolo Progetto']
-    = $project['Testo Progetto']
+    %h3.progetto = $project['Titolo Progetto']
+    .descrizione
+      = $project['Testo Progetto']
 
