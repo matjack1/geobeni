@@ -25,7 +25,16 @@ GeoMashup.addAction('selectedMarker', function(opts, selected_marker, map) {
 GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
   var $content = jQuery(filter.content);
   $marker_title = $content.find('h2 a');
-  $marker_title.attr('onclick', "jQuery.colorbox({href: '"+ $marker_title.attr('href') +"'}); return false;");
-  filter.content = $content.html();
+  $marker_title.attr('onclick',
+                     "jQuery.colorbox( \
+                       { \
+                         href: '"+ $marker_title.attr('href') +"', \
+                         iframe: true, \
+                         width: '60%', \
+                         height: '80%' \
+                       } \
+                     ); \
+                     return false;");
+  filter.content = $content.get(0).outerHTML;
 });
 
