@@ -22,3 +22,10 @@ GeoMashup.addAction('selectedMarker', function(opts, selected_marker, map) {
   map.setCenterAndZoom(latlon, 16);
 });
 
+GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
+  var $content = jQuery(filter.content);
+  $marker_title = $content.find('h2 a');
+  $marker_title.attr('onclick', "jQuery.colorbox({href: '"+ $marker_title.attr('href') +"'}); return false;");
+  filter.content = $content.html();
+});
+

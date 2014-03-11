@@ -9,8 +9,9 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<title>Geo Mashup Map</title>
 		<?php GeoMashupRenderMap::head(); ?>
-		<?php echo javascript_include_tag("jquery.fancybox") ?>
+    <?php echo javascript_include_tag('jquery.colorbox') ?>
 
+    <?php echo stylesheet_link_tag('colorbox') ?>
 		<style type="text/css">
 			v\:* { behavior:url(#default#VML); }
 			#geo-mashup {
@@ -31,3 +32,4 @@
 	<?php echo GeoMashupRenderMap::map_script( 'geo-mashup' ); ?>
 	</body>
 </html>
+
