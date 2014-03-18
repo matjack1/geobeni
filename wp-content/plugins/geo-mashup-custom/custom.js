@@ -18,7 +18,23 @@ GeoMashup.addAction('loadedMap', function(properties, map) {
 });
 
 GeoMashup.addAction('selectedMarker', function(opts, selected_marker, map) {
-  var latlon = new mxn.LatLonPoint(selected_marker.location.lat + 0.3, selected_marker.location.lon);
-  map.setCenter(latlon);
+  var latlon = new mxn.LatLonPoint(selected_marker.location.lat + 0.002, selected_marker.location.lon);
+  map.setCenterAndZoom(latlon, 16);
+});
+
+GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
+  var $content = jQuery(filter.content);
+  $marker_title = $content.find('h2 a');
+  $marker_title.attr('onclick',
+                     "jQuery.colorbox( \
+                       { \
+                         href: '"+ $marker_title.attr('href') +"', \
+                         iframe: true, \
+                         width: '100%', \
+                         height: '90%' \
+                       } \
+                     ); \
+                     return false;");
+  filter.content = $content.get(0).outerHTML;
 });
 

@@ -1,16 +1,9 @@
 - global $post
 
-.sidebar
-  %h2 Oggi
   - $projects = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Progetti', $use_name = true, $return_format  = 2)
-  %h3 Progetti
   %ul
     - foreach($projects as $project)
-      %li.progetto{:name => $nome} = $project['Titolo Progetto']
-
-.content
-  - foreach($projects as $project)
-    %h3.progetto = $project['Titolo Progetto']
-    .descrizione
-      = $project['Testo Progetto']
-
+      .titolo_progetto
+        %li = $project['Titolo Progetto']
+      .descrizione
+        %p = $project['Testo Progetto']
