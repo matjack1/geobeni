@@ -1,4 +1,5 @@
 @import "compass"
+@import "compass/utilities/text/replacement"
 @font-face
   font-family: 'special'
   src: url('../fonts/SpecialElite.ttf')
@@ -19,15 +20,12 @@ h3
   font-weight: bold
 
 h1.logo
+  +replace-text-with-dimensions('titolo.png')
   position: absolute
-  background-image: url(../images/titolo.png)
   left: 25px
-  height: 140px
-  width: 250px
   top: 60px
   opacity: 0.5
   z-index: 1
-  text-indent: -999999px
 
 #details
   position: absolute
@@ -41,10 +39,7 @@ h1.logo
   margin: auto
 
 .libera
-  position: absolute
-  background-image: url(../images/libera.jpg)
-  height: 140px
-  width: 140px
+  +replace-text-with-dimensions('libera.jpg')
   position: absolute
   top: 60px
   right: 30px
@@ -58,16 +53,6 @@ h1.logo
   @import "tinymce"
 
 .home
-  h1.logo
-    position: absolute
-    background-image: url(../images/titolo.png)
-    left: 25px
-    height: 140px
-    width: 250px
-    top: 60px
-    opacity: 0.5
-    z-index: 1
-    text-indent: -999999px
   .gm-map iframe
     position: absolute
 
@@ -113,14 +98,14 @@ h1.logo
       .titolo_progetto
         font-size: 1.5em
         text-decoration: underline
-      .descrizione  
+      .descrizione
         overflow-x: hidden
-        display: none 
+        display: none
         position: relative
         word-wrap: break-word
         text-align: justify
         left: 15px
-        p 
+        p
           position: relative
           margin-right: 25px
 
