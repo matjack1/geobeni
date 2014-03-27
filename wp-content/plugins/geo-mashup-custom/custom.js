@@ -30,8 +30,8 @@ GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
                        { \
                          href: '"+ $marker_title.attr('href') +"', \
                          iframe: true, \
-                         width: '60%', \
-                         height: '80%' \
+                         width: '100%', \
+                         height: '90%' \
                        } \
                      ); \
                      return false;");

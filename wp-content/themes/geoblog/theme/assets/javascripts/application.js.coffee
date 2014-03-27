@@ -13,8 +13,13 @@ provinces_toggler = ->
 geopost_photo_lightbox = ->
   $('.gallery a').colorbox()
 
+progetti_toggler = ->
+  $('.titolo_progetto').click ->
+     $(@).next('.descrizione').toggle()
+     
 $(document).ready ->
   typology_switcher()
   provinces_toggler()
+  progetti_toggler()
   geopost_photo_lightbox()
 

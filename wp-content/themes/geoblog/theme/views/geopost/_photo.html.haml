@@ -1,6 +1,5 @@
 - global $post
 
-%h2 Foto
 - $photos = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Foto', $use_name = true, $return_format  = 1)
 .gallery
   - foreach($photos['Foto'] as $photo)
