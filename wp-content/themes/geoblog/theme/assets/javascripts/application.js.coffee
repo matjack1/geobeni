@@ -16,7 +16,7 @@ geopost_photo_lightbox = ->
 progetti_toggler = ->
   $('.titolo_progetto').click ->
      $(@).next('.descrizione').toggle()
-     
+
 $(document).ready ->
   typology_switcher()
   provinces_toggler()
