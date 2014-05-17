@@ -22,17 +22,6 @@ GeoMashup.addAction('selectedMarker', function(opts, selected_marker, map) {
   map.setCenterAndZoom(latlon, 16);
 });
 
-function avoid_conflicts_with_iframe() {
-  var $elements_hidden_by_iframe = parent.jQuery('h1.logo, .geo-menu, .geo-legend, .libera');
-  jQuery(document).bind('cbox_complete', function(){
-    $elements_hidden_by_iframe.hide();
-  });
-
-  jQuery(document).bind('cbox_cleanup', function(){
-    $elements_hidden_by_iframe.show();
-  });
-}
-
 GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
   var $content = jQuery(filter.content);
   $marker_title = $content.find('h2 a');
@@ -41,12 +30,11 @@ GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
                        { \
                          href: '"+ $marker_title.attr('href') +"', \
                          iframe: true, \
-                         width: '100%', \
-                         height: '90%' \
+                         width: '60%', \
+                         height: '80%' \
                        } \
                      ); \
                      return false;");
   filter.content = $content.get(0).outerHTML;
-  avoid_conflicts_with_iframe();
 });
 
