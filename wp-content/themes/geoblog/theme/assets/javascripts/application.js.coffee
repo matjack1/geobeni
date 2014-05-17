@@ -17,9 +17,14 @@ progetti_toggler = ->
   $('.titolo_progetto').click ->
      $(@).next('.descrizione').toggle()
 
+progetti_open_first_two = ->
+  if $('.titolo_progetto').length < 3
+    $('.titolo_progetto').click()
+
 $(document).ready ->
   typology_switcher()
   provinces_toggler()
   progetti_toggler()
+  progetti_open_first_two()
   geopost_photo_lightbox()
 
