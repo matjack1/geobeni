@@ -1,6 +1,9 @@
 - global $post
 
 - $video = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Video', $use_name = true, $return_format  = 1)
+- if(!isset($video['Video Embed']))
+  - $video['Video Embed'] = array()
+
 - foreach($video['Video Embed'] as $video)
   = $video
 

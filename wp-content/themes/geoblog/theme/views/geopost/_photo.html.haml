@@ -1,6 +1,8 @@
 - global $post
 
 - $photos = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Foto', $use_name = true, $return_format  = 1)
+- if(!isset($photos['Foto']))
+  - $photos['Foto'] = array()
 .gallery
   - foreach($photos['Foto'] as $photo)
     = wp_get_attachment_link($photo)
