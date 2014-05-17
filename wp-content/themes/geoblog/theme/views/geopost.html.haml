@@ -1,5 +1,11 @@
 - global $post
 
+.info
+  .titolo_post
+    %h2= the_title()
+
+- $tab = isset($_GET['tab']) ? $_GET['tab'] : 'history'
+
 .tabs
   .tab.tab_storia
     = link_to('Storia', get_permalink().'?tab=history', selected_tab('history', $tab))
@@ -9,12 +15,6 @@
     = link_to('Foto', get_permalink().'?tab=photo', selected_tab('photo', $tab))
   .tab.tab_video
     = link_to('Video', get_permalink().'?tab=video', selected_tab('video', $tab))
-
-.info
-  .titolo_post
-    %h2= the_title()
-
-- $tab = $_GET['tab'] ? $_GET['tab'] : 'history'
 
 .content
   = render_partial('geopost/'.$tab)

@@ -10,7 +10,6 @@ html, body
   height: 100%
   overflow: hidden
 
-
 h2
   font-size: 2em
   font-weight: bold
@@ -60,20 +59,11 @@ h1.logo
   background-color: #d94c3a
   .site-content
     .info
-      position: absolute
-      width: 100%
-      height: 30px
-      background-color: white
       .titolo_post
-        position: absolute
-        width: 100%
+        background-color: white
         text-align: center
-        top: 7px
+        padding: 5px
     .tabs
-      position: absolute
-      top: 30px
-      width: 100%
-      height: 50px
       text-align: center
       background-color: black
       a:link, a:visited, a:hover, a:active
@@ -82,31 +72,28 @@ h1.logo
         width: 25%
         font-size: 2em
         display: inline-block
-        margin-top: 10px
+        margin: 10px 0
+        .selected
+          color: yellow
     .content
-      position: absolute
       overflow-y: auto
       overflow-x: hidden
-      top: 90px
-      left: 10px
-      right: 10px
-      bottom: 10px
-      margin: 5px
+      padding: 15px
       word-wrap: break-word
       text-align: justify
       line-height: 1.5em
       .titolo_progetto
         font-size: 1.5em
         text-decoration: underline
+        cursor: pointer
+        margin-bottom: 5px
       .descrizione
         overflow-x: hidden
         display: none
-        position: relative
         word-wrap: break-word
         text-align: justify
-        left: 15px
+        margin-left: 15px
         p
-          position: relative
           margin-right: 25px
 
 .geo-menu

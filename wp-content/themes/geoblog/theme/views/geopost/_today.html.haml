@@ -3,7 +3,8 @@
   - $projects = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Progetti', $use_name = true, $return_format  = 2)
   %ul
     - foreach($projects as $project)
-      .titolo_progetto
-        %li = $project['Titolo Progetto']
-      .descrizione
-        %p = $project['Testo Progetto']
+      %li
+        .titolo_progetto = $project['Titolo Progetto']
+        .descrizione
+          %p = $project['Testo Progetto']
+
