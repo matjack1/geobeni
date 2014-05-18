@@ -20,6 +20,7 @@ GeoMashup.addAction('loadedMap', function(properties, map) {
 GeoMashup.addAction('selectedMarker', function(opts, selected_marker, map) {
   var latlon = new mxn.LatLonPoint(selected_marker.location.lat + 0.002, selected_marker.location.lon);
   map.setCenterAndZoom(latlon, 16);
+  jQuery.colorbox.close();
 });
 
 GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
