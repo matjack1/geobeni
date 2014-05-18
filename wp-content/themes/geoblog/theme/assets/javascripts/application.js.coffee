@@ -14,12 +14,12 @@ geopost_photo_lightbox = ->
   $('.gallery a').colorbox()
 
 progetti_toggler = ->
-  $('.titolo_progetto').click ->
+  $('.titolo_progetto, .titolo_storia').click ->
      $(@).next('.descrizione').toggle()
 
 progetti_open_first_two = ->
-  if $('.titolo_progetto').length < 3
-    $('.titolo_progetto').click()
+  if $('.titolo_progetto, .titolo_storia').length < 3
+    $('.titolo_progetto, .titolo_storia').click()
 
 $(document).ready ->
   typology_switcher()

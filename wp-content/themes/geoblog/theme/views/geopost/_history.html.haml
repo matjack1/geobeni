@@ -3,3 +3,11 @@
 - $geopost_data = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato', $use_name = true, $return_format  = 2)
 = $geopost_data[0]['Storia']
 
+- $history_fields = simple_fields_get_post_group_values($post->ID, 'Bene Confiscato - Storia', $use_name = true, $return_format  = 2)
+%ul
+  - foreach($history_fields as $field)
+    %li
+      .titolo_storia = $field['Titolo']
+      .descrizione
+        %p = $field['Descrizione']
+
