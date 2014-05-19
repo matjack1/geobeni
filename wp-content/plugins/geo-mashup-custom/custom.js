@@ -26,13 +26,24 @@ GeoMashup.addAction('selectedMarker', function(opts, selected_marker, map) {
 GeoMashup.addAction('markerInfoWindowLoad', function(marker, filter) {
   var $content = jQuery(filter.content);
   $marker_title = $content.find('h2 a');
+
+  jQuery(document).bind('cbox_load', function(){
+      parent.window.clear_iframe_area();
+  });
+
+  jQuery(document).bind('cbox_closed', function(){
+    parent.window.restore_iframe_area();
+  });
+
   $marker_title.attr('onclick',
                      "jQuery.colorbox( \
                        { \
                          href: '"+ $marker_title.attr('href') +"', \
                          iframe: true, \
-                         width: '60%', \
-                         height: '80%' \
+                         width: '75%', \
+                         height: '100%', \
+                         top: 0, \
+                         right: 0 \
                        } \
                      ); \
                      return false;");

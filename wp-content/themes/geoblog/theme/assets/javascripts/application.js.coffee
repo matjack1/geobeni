@@ -28,3 +28,10 @@ $(document).ready ->
   progetti_open_first_two()
   geopost_photo_lightbox()
 
+
+window.clear_iframe_area = ->
+  $('.libera, .geo-legend').hide()
+
+window.restore_iframe_area = ->
+  $('.libera, .geo-legend').show()
+
