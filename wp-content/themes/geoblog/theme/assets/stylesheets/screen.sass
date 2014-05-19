@@ -8,7 +8,6 @@
 html, body
   width: 100%
   height: 100%
-  overflow: hidden
 
 h2
   font-size: 2em
@@ -115,10 +114,10 @@ h1.logo
       +border-top-radius(7px)
       cursor: pointer
       width: 50%
-    .typology-aziende
+    .typology-immobili
       background-color: yellow
       left: 1%
-    .typology-immobili
+    .typology-aziende
       background-color: orange
       left: 119px
   .provinces
@@ -128,14 +127,14 @@ h1.logo
     +border-bottom-radius(7px)
     padding: 20px
     left: 1%
-    max-height: 800%
+    max-height: 230px
     width: 189px
     +single-box-shadow(#333333,0px,2px,4px,false,false)
-  .provinces-aziende
+  .provinces-immobili
     background-color: yellow
     border-bottom: 10px solid yellow
     border-top: 10px solid yellow
-  .provinces-immobili
+  .provinces-aziende
     background-color: orange
     border-bottom: 10px solid orange
     border-top: 10px solid orange
@@ -227,4 +226,7 @@ footer
     font-weight: bolder
     font-size: 2em
     line-height: 30px
+
+.no-overflow
+  overflow: hidden
 

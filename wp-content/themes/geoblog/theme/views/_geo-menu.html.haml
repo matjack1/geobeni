@@ -1,5 +1,5 @@
 %ul(class='typologies')
-  - $typologies = get_terms('tipologia')
+  - $typologies = get_terms('tipologia', array('orderby'=>'name', 'order'=>'desc'))
   - foreach($typologies as $typology)
     %li(class="typology typology-#{$typology->slug}")
       %h3

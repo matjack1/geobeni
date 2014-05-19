@@ -1,7 +1,7 @@
 !!! 5
 %html(html_attrs())
   %head= render_partial("layouts/head")
-  %body(class="#{body_classes()}")
+  %body(class="#{body_classes()} no-overflow")
     .page-wrapper
       = render_partial("layouts/header")
       %section.site-content= wl_yield()
