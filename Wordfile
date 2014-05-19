@@ -1,1 +1,2 @@
-deploy_command: 'wordmove push -t'
+deploy_command: 'wordmove push -tp'
+
