@@ -2,10 +2,10 @@
  html, body { height: 100%; overflow: hidden; margin: 0; }
 
 /* Info window */
-.locationinfo { font-size:80%; overflow:auto; width:300px; height:300px; }
+.locationinfo { font-size:1.2em; overflow:auto; width:300px; height:300px; color: green; font-family: arial }
 .locationinfo img { float: left; width: 100px; height: 300px; margin-right: 5px; }
-.gm-style .gm-style-iw .locationinfo h2 a { font-size: 1.2em; }
+.gm-style .gm-style-iw .locationinfo h2 a { font-size: 2em; text-decoration: none;}
 
 /* Title link style */
-.locationinfo h2 a, .info-window-max h2 a { text-decoration:underline; margin:0; padding:0; }
+.locationinfo h2 a, .info-window-max h2 a { text-decoration:underline; margin:0; padding:0; color: pink; }
 
