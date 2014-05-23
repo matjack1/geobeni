@@ -1,6 +1,8 @@
 !!! 5
 %html(html_attrs())
   %head= render_partial("layouts/head")
+    %link{:href => "favicon.ico", :rel => "icon"}
+    %title Geoblog
   %body(class="#{body_classes()} no-overflow")
     .page-wrapper
       = render_partial("layouts/header")
