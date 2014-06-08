@@ -2,10 +2,10 @@
  html, body { height: 100%; overflow: hidden; margin: 0; }
 
 /* Info window */
-.locationinfo { font-size:1.2em; overflow:auto; width:300px; height:300px; color: green; font-family: arial }
+.locationinfo { font-size:1em; overflow:auto; width:300px; height:300px; color: black; font-family: arial }
 .locationinfo img { float: left; width: 100px; height: 300px; margin-right: 5px; }
-.gm-style .gm-style-iw .locationinfo h2 a { font-size: 2em; text-decoration: none;}
-
+.gm-style .gm-style-iw .locationinfo h2 a {text-decoration: none; color: #e3078d;}
+.locationinfo a {color: #e3078d;}
 /* Title link style */
-.locationinfo h2 a, .info-window-max h2 a { text-decoration:underline; margin:0; padding:0; color: pink; }
+.locationinfo h2 a, .info-window-max h2 a {font-size: 1.5em; text-decoration:underline; margin:0; padding:0; color: #e3078d; }
 
