@@ -7,7 +7,7 @@ function my_geo_mashup_locations_json_filter( $json_properties, $queried_object 
   $tipologia = reset($meta_field);
 
   $icons = array(
-    'aziende-in-gestione' => 'blu.png',
+    'aziende-in-gestione' => 'fabbrica.png',
     'beni-destinati-consegnati' => 'verde.png',
     'beni-destinati-non-consegnati' => 'giallo.png',
     'beni-in-gestione' => 'rosso.png');

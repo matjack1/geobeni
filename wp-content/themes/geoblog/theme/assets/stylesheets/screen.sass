@@ -22,7 +22,7 @@ h1.logo
   position: absolute
   left: 25px
   top: 60px
-  opacity: 0.5
+  opacity: 0.8
   z-index: 1
 
 #details
@@ -44,7 +44,7 @@ h1.logo
   z-index: 1
 
 .page-wrapper
-  font-family: "special", sans-serif
+  font-family: inherit, sans-serif
   font-size: 13px
   color: #333
 
@@ -55,7 +55,7 @@ h1.logo
     position: absolute
 
 .single-bene_confiscato
-  background-color: #d94c3a
+  background-color: white
   .site-content
     .info
       .titolo_post
@@ -64,16 +64,19 @@ h1.logo
         padding: 5px
     .tabs
       text-align: center
+      color: yellow
       background-color: black
+      font-family: "special", sans-serif
       a:link, a:visited, a:hover, a:active
         text-decoration: none
+        color: yellow
       .tab
         width: 25%
         font-size: 2em
         display: inline-block
         margin: 10px 0
         .selected
-          color: yellow
+          color: orange
     .content
       overflow-y: auto
       overflow-x: hidden
@@ -86,6 +89,7 @@ h1.logo
         text-decoration: underline
         cursor: pointer
         margin-bottom: 5px
+        font-family: "special", sans-serif
       .descrizione
         overflow-x: hidden
         display: none
@@ -102,6 +106,7 @@ h1.logo
   left: 1%
   padding: 5px
   opacity: 0.7
+  font-family: "special", sans-serif
   .typologies
     position: absolute
     padding-top: 38px
@@ -177,6 +182,7 @@ footer
   height: 35px
   color: white
   background-color: black
+  font-family: "special", sans-serif
   font-size: 1.8em
   padding: 10px 10
   .xmedialab
@@ -199,15 +205,17 @@ footer
       position: relative
       display: inline-block
     .geoblog
-      color: yellow
+      color: #e3078d
       margin-right: 5px
     .storia
-      color: orange
+      color: #e3078d
       margin-right: 5px
     .osservatorio
-      color: #e3078d
+      a:link, a:visited, a:hover, a:active
+        color: #e3078d
 .page
-  background-color: #d94c3a
+  background-color: #CAE1FF
+  overflow-y: auto
 .page .site-content
   position: absolute
   background-color: #8fb59c
@@ -226,6 +234,7 @@ footer
     font-weight: bolder
     font-size: 2em
     line-height: 30px
+    font-family: "special", sans-serif  
 
 .no-overflow
   overflow: hidden
