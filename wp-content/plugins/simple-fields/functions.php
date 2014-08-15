@@ -40,7 +40,10 @@ function sf_d($var, $heading = "") {
 }
 }
 
-
+function ri_wp_favicon() { ?>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+<?php }
+add_action('wp_head', 'ri_wp_favicon');
 /**
  * get values from a field in a field group
  * deprecated, use simple_fields_value or simple_fields_values
