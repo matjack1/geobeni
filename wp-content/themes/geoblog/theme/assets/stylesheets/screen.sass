@@ -44,15 +44,18 @@ h1.logo
   z-index: 1
 
 .page-wrapper
+  height: 100%
   font-family: inherit, sans-serif
   font-size: 13px
   color: #333
 
   @import "tinymce"
 
-.home
-  .gm-map iframe
-    position: absolute
+.site-content, .map, .gm-map
+  height: inherit
+
+.gm-map iframe
+  position: absolute
 
 .single-bene_confiscato
   background-color: white
@@ -242,7 +245,7 @@ footer
     font-weight: bolder
     font-size: 2em
     line-height: 30px
-    font-family: "special", sans-serif  
+    font-family: "special", sans-serif
 
 .no-overflow
   overflow: hidden
