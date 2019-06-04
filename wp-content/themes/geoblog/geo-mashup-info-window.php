@@ -15,11 +15,10 @@ add_filter( 'the_excerpt', array( 'GeoMashupQuery', 'strip_brackets' ) );
 
     if (!empty($website)) { ?>
       <p><?php echo link_to('Sito Internet', $website) ?></p>
-    <? }
+    <?php }
 
     if (!empty($email)) { ?>
       <p><?php echo link_to('Indirizzo Email', 'mailto:'.$email) ?></p>
-    <? }
+    <?php }
   endwhile; ?>
 </div>
-
