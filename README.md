@@ -1,6 +1,8 @@
 geobeni
 =======
 
+[![Join the chat at https://gitter.im/geobeni/community](https://badges.gitter.im/geobeni/community.svg)](https://gitter.im/geobeni/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Documentation used:
 
 * https://gist.github.com/matjack1/6d74c757a2e49739a06a
