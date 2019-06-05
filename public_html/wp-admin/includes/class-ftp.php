@@ -1,9 +1,9 @@
 <?php
 /**
- * PemFTP - A Ftp implementation in pure PHP
+ * PemFTP - An Ftp implementation in pure PHP
  *
  * @package PemFTP
- * @since 2.5
+ * @since 2.5.0
  *
  * @version 1.0
  * @copyright Alexey Dotsenko
@@ -17,7 +17,7 @@
  *
  * This can be redefined.
  *
- * @since 2.5
+ * @since 2.5.0
  * @var string
  */
 if(!defined('CRLF')) define('CRLF',"\r\n");
@@ -27,7 +27,7 @@ if(!defined('CRLF')) define('CRLF',"\r\n");
  *
  * This can be redefined.
  *
- * @since 2.5
+ * @since 2.5.0
  * @var int
  */
 if(!defined("FTP_AUTOASCII")) define("FTP_AUTOASCII", -1);
@@ -35,7 +35,7 @@ if(!defined("FTP_AUTOASCII")) define("FTP_AUTOASCII", -1);
 /**
  *
  * This can be redefined.
- * @since 2.5
+ * @since 2.5.0
  * @var int
  */
 if(!defined("FTP_BINARY")) define("FTP_BINARY", 1);
@@ -43,7 +43,7 @@ if(!defined("FTP_BINARY")) define("FTP_BINARY", 1);
 /**
  *
  * This can be redefined.
- * @since 2.5
+ * @since 2.5.0
  * @var int
  */
 if(!defined("FTP_ASCII")) define("FTP_ASCII", 0);
@@ -53,25 +53,25 @@ if(!defined("FTP_ASCII")) define("FTP_ASCII", 0);
  *
  * This can be redefined.
  *
- * @since 2.5
+ * @since 2.5.0
  * @var bool
  */
 if(!defined('FTP_FORCE')) define('FTP_FORCE', true);
 
 /**
- * @since 2.5
+ * @since 2.5.0
  * @var string
  */
 define('FTP_OS_Unix','u');
 
 /**
- * @since 2.5
+ * @since 2.5.0
  * @var string
  */
 define('FTP_OS_Windows','w');
 
 /**
- * @since 2.5
+ * @since 2.5.0
  * @var string
  */
 define('FTP_OS_Mac','m');
@@ -121,10 +121,6 @@ class ftp_base {
 	var $AutoAsciiExt;
 
 	/* Constructor */
-	function ftp_base($port_mode=FALSE) {
-		$this->__construct($port_mode);
-	}
-
 	function __construct($port_mode=FALSE, $verb=FALSE, $le=FALSE) {
 		$this->LocalEcho=$le;
 		$this->Verbose=$verb;
@@ -155,6 +151,10 @@ class ftp_base {
 		$this->features=array();
 		if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') $this->OS_local=FTP_OS_Windows;
 		elseif(strtoupper(substr(PHP_OS, 0, 3)) === 'MAC') $this->OS_local=FTP_OS_Mac;
+	}
+
+	function ftp_base($port_mode=FALSE) {
+		$this->__construct($port_mode);
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
@@ -380,7 +380,7 @@ class ftp_base {
 	function pwd() {
 		if(!$this->_exec("PWD", "pwd")) return FALSE;
 		if(!$this->_checkCode()) return FALSE;
-		return ereg_replace("^[0-9]{3} \"(.+)\".+", "\\1", $this->_message);
+		return preg_replace("/^[0-9]{3} \"(.+)\".*$/s", "\\1", $this->_message);
 	}
 
 	function cdup() {
@@ -424,7 +424,7 @@ class ftp_base {
 		}
 		if(!$this->_exec("SIZE ".$pathname, "filesize")) return FALSE;
 		if(!$this->_checkCode()) return FALSE;
-		return ereg_replace("^[0-9]{3} ([0-9]+)".CRLF, "\\1", $this->_message);
+		return preg_replace("/^[0-9]{3} ([0-9]+).*$/s", "\\1", $this->_message);
 	}
 
 	function abort() {
@@ -444,7 +444,7 @@ class ftp_base {
 		}
 		if(!$this->_exec("MDTM ".$pathname, "mdtm")) return FALSE;
 		if(!$this->_checkCode()) return FALSE;
-		$mdtm = ereg_replace("^[0-9]{3} ([0-9]+)".CRLF, "\\1", $this->_message);
+		$mdtm = preg_replace("/^[0-9]{3} ([0-9]+).*$/s", "\\1", $this->_message);
 		$date = sscanf($mdtm, "%4d%2d%2d%2d%2d%2d");
 		$timestamp = mktime($date[3], $date[4], $date[5], $date[1], $date[2], $date[0]);
 		return $timestamp;
@@ -504,7 +504,7 @@ class ftp_base {
 		return $this->_list(($arg?" ".$arg:"").($pathname?" ".$pathname:""), "LIST", "rawlist");
 	}
 
-	function nlist($pathname="") {
+	function nlist($pathname="", $arg="") {
 		return $this->_list(($arg?" ".$arg:"").($pathname?" ".$pathname:""), "NLST", "nlist");
 	}
 
@@ -524,7 +524,7 @@ class ftp_base {
 		return $exists;
 	}
 
-	function fget($fp, $remotefile,$rest=0) {
+	function fget($fp, $remotefile, $rest=0) {
 		if($this->_can_restore and $rest!=0) fseek($fp, $rest);
 		$pi=pathinfo($remotefile);
 		if($this->_type==FTP_ASCII or ($this->_type==FTP_AUTOASCII and in_array(strtoupper($pi["extension"]), $this->AutoAsciiExt))) $mode=FTP_ASCII;
@@ -583,7 +583,7 @@ class ftp_base {
 		return $out;
 	}
 
-	function fput($remotefile, $fp) {
+	function fput($remotefile, $fp, $rest=0) {
 		if($this->_can_restore and $rest!=0) fseek($fp, $rest);
 		$pi=pathinfo($remotefile);
 		if($this->_type==FTP_ASCII or ($this->_type==FTP_AUTOASCII and in_array(strtoupper($pi["extension"]), $this->AutoAsciiExt))) $mode=FTP_ASCII;
@@ -694,7 +694,7 @@ class ftp_base {
 		}
 		foreach($list as $k=>$v) {
 			$list[$k]=$this->parselisting($v);
-			if($list[$k]["name"]=="." or $list[$k]["name"]=="..") unset($list[$k]);
+			if( ! $list[$k] or $list[$k]["name"]=="." or $list[$k]["name"]=="..") unset($list[$k]);
 		}
 		$ret=true;
 		foreach($list as $el) {
@@ -727,7 +727,7 @@ class ftp_base {
 
 		foreach($list as $k=>$v) {
 			$list[$k]=$this->parselisting($v);
-			if($list[$k]["name"]=="." or $list[$k]["name"]=="..") unset($list[$k]);
+			if( ! $list[$k] or $list[$k]["name"]=="." or $list[$k]["name"]=="..") unset($list[$k]);
 		}
 		$ret=true;
 
@@ -775,7 +775,7 @@ class ftp_base {
 			$pattern=substr($pattern,$lastpos);
 		} else $path=getcwd();
 		if(is_array($handle) and !empty($handle)) {
-			while($dir=each($handle)) {
+			foreach($handle as $dir) {
 				if($this->glob_pattern_match($pattern,$dir))
 				$output[]=$dir;
 			}
@@ -818,8 +818,8 @@ class ftp_base {
 	function glob_regexp($pattern,$probe) {
 		$sensitive=(PHP_OS!='WIN32');
 		return ($sensitive?
-			ereg($pattern,$probe):
-			eregi($pattern,$probe)
+			preg_match( '/' . preg_quote( $pattern, '/' ) . '/', $probe ) :
+			preg_match( '/' . preg_quote( $pattern, '/' ) . '/i', $probe )
 		);
 	}
 
@@ -903,5 +903,10 @@ if ( ! $mod_sockets && function_exists( 'dl' ) && is_callable( 'dl' ) ) {
 	$mod_sockets = extension_loaded( 'sockets' );
 }
 
-require_once "class-ftp-" . ( $mod_sockets ? "sockets" : "pure" ) . ".php";
-?>
+require_once dirname( __FILE__ ) . "/class-ftp-" . ( $mod_sockets ? "sockets" : "pure" ) . ".php";
+
+if ( $mod_sockets ) {
+	class ftp extends ftp_sockets {}
+} else {
+	class ftp extends ftp_pure {}
+}
