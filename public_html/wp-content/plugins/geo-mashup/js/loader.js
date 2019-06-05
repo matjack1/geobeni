@@ -1,1 +1,25 @@
-var GeoMashupLoader;GeoMashupLoader={addMapFrame:function(d,f,a,e,b){var c=['<iframe name="'];d.style.backgroundImage="none";c.push(b);c.push('" src="');c.push(f);c.push('" style="height:');c.push(a);c.push("; width:");c.push(e);c.push('; overflow: hidden; border: none;"></iframe>');d.innerHTML=c.join("")}};
+/*global GeoMashupLoader: true */
+/*jslint sloppy: true */
+var GeoMashupLoader;
+
+/**
+ * Geo Mashup Loader object.
+ *
+ * Currently implements click to load feature.
+ */
+GeoMashupLoader = {
+	addMapFrame : function (element, frame_url, height, width, name) {
+		var html = ['<iframe name="'];
+		element.style.backgroundImage = 'none';
+		html.push(name);
+		html.push('" src="');
+		html.push(frame_url);
+		html.push('" style="height:');
+		html.push(height);
+		html.push('; width:');
+		html.push(width);
+		html.push('; overflow: hidden; border: none;"></iframe>');
+		element.innerHTML = html.join('');
+	}
+};
+

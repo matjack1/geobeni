@@ -1,13 +1,95 @@
-/*
-Copyright (c) 2014 Tom Carden, Steve Coast, Mikel Maron, Andrew Turner, Henri Bergius, Rob Moran, Derek Fowler
-All rights reserved.
+mxn.addProxyMethods( mxn.Mapstraction, [ 'enableGeoMashupExtras', 'setMapTypes' ], false );
 
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+mxn.register( 'googlev3', {
+	Mapstraction: {
+		enableGeoMashupExtras: function() {
+			var me = this;
+			me.markerAdded.addHandler( function( name, source, args ) {
+				if ( args.marker.draggable ) {
+					// add marker dragend event
+					args.marker.dragend = new mxn.Event( 'dragend', args.marker );
+					google.maps.event.addListener( args.marker.proprietary_marker, 'dragend', function( mouse ) {
+						args.marker.dragend.fire( {
+							location: new mxn.LatLonPoint( mouse.latLng.lat(), mouse.latLng.lng() )
+						} );
+					});
+				}
+			});
 
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- * Neither the name of the Mapstraction nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+			// Fire endPan when the center changes (add a better event to mxn?)
+			// Lets us detect recentering after a KML layer is loaded
+			google.maps.event.addListener( me.maps['googlev3'], 'center_changed', function() {
+				me.endPan.fire()
+			} );
+		},
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-mxn.addProxyMethods(mxn.Mapstraction,["enableGeoMashupExtras","setMapTypes"],false);mxn.register("googlev3",{Mapstraction:{enableGeoMashupExtras:function(){var a=this;a.markerAdded.addHandler(function(c,d,b){if(b.marker.draggable){b.marker.dragend=new mxn.Event("dragend",b.marker);google.maps.event.addListener(b.marker.proprietary_marker,"dragend",function(e){b.marker.dragend.fire({location:new mxn.LatLonPoint(e.latLng.lat(),e.latLng.lng())})})}});google.maps.event.addListener(a.maps.googlev3,"center_changed",function(){a.endPan.fire()})},setMapTypes:function(b){var d=this.maps[this.api];var c=[];var a;if(typeof b!=="object"){b=[b]}for(a=0;a<b.length;a+=1){switch(b[a]){case mxn.Mapstraction.ROAD:c.push(google.maps.MapTypeId.ROADMAP);break;case mxn.Mapstraction.SATELLITE:c.push(google.maps.MapTypeId.SATELLITE);break;case mxn.Mapstraction.HYBRID:c.push(google.maps.MapTypeId.HYBRID);break;case mxn.Mapstraction.PHYSICAL:c.push(google.maps.MapTypeId.TERRAIN);break}}d.setOptions({mapTypeControlOptions:{mapTypeIds:c}})}},Marker:{openBubble:function(){var a=this;if(!this.map.hasOwnProperty("geo_mashup_infowindow")||this.map.geo_mashup_infowindow===null){this.map.geo_mashup_infowindow=new google.maps.InfoWindow();google.maps.event.addListener(this.map.geo_mashup_infowindow,"closeclick",function(b){a.closeBubble()})}this.openInfoBubble.fire({marker:this});this.map.geo_mashup_infowindow.setContent(this.infoBubble);this.map.geo_mashup_infowindow.open(this.map,this.proprietary_marker)},closeBubble:function(){if(this.map.hasOwnProperty("geo_mashup_infowindow")&&this.map.geo_mashup_infowindow!==null){this.map.geo_mashup_infowindow.close();this.closeInfoBubble.fire({marker:this})}}}});
+		setMapTypes: function( types ) {
+			var map = this.maps[this.api];
+			var mapTypeIds = [];
+			var i;
+			if ( typeof types !== 'object' ) {
+				types = [ types ];
+			}
+			for ( i = 0; i < types.length; i += 1 ) {
+				switch( types[i] ) {
+					case mxn.Mapstraction.ROAD:
+						mapTypeIds.push(google.maps.MapTypeId.ROADMAP);
+						break;
+					case mxn.Mapstraction.SATELLITE:
+						mapTypeIds.push(google.maps.MapTypeId.SATELLITE);
+						break;
+					case mxn.Mapstraction.HYBRID:
+						mapTypeIds.push(google.maps.MapTypeId.HYBRID);
+						break;
+					case mxn.Mapstraction.PHYSICAL:
+						mapTypeIds.push(google.maps.MapTypeId.TERRAIN);
+						break;
+				}	
+			}
+			map.setOptions( {
+				mapTypeControlOptions: {
+					mapTypeIds: mapTypeIds
+				}
+			} );
+		}
+	},
+
+	/**
+	 * Override info bubbles to use a single google info window object.
+	 *
+	 * This prevents multiple info windows from popping up when markerclusterer
+	 * adds and removes markers from the map.
+	 *
+	 * Maybe mapstraction would also benefit a from single-bubble option that does this?
+	 */
+	Marker: {
+		openBubble: function() {
+			var marker = this;
+			if (!this.map.hasOwnProperty('geo_mashup_infowindow') || this.map.geo_mashup_infowindow === null) {
+				this.map.geo_mashup_infowindow = new google.maps.InfoWindow();
+				google.maps.event.addListener(this.map.geo_mashup_infowindow, 'closeclick', function(closedWindow) {
+					marker.closeBubble();
+				});
+				if ( !this.proprietary_marker.map ) {
+					// Marker is clustered and needs to have the info window repositioned
+					google.maps.event.addListenerOnce( this.map.geo_mashup_infowindow, 'domready', function() {
+						marker.map.geo_mashup_infowindow.close();
+						marker.map.geo_mashup_infowindow.setPosition( marker.proprietary_marker.getPosition() );
+						marker.map.geo_mashup_infowindow.open( marker.map );
+					});
+				}
+			}
+			this.openInfoBubble.fire( { 'marker': this } );
+			this.map.geo_mashup_infowindow.setContent( this.infoBubble );
+			this.map.geo_mashup_infowindow.open( this.map, this.proprietary_marker );
+		},
+
+		closeBubble: function() {
+			if (this.map.hasOwnProperty('geo_mashup_infowindow') && this.map.geo_mashup_infowindow !== null) {
+				this.map.geo_mashup_infowindow.close();
+				this.closeInfoBubble.fire( { 'marker': this } );
+			}
+		}
+
+	}
+});

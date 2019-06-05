@@ -42,7 +42,7 @@ abstract class GeoMashupHttpGeocoder {
 	/**
 	 * Constructor
 	 *
-	 * @param string $args Optional array of arguments:
+	 * @param array $args Optional array of arguments:
 	 * 		language - two digit language code, defaults to blog language
 	 * 		max_results - maximum number of results to fetch
 	 * 		default http params - array of WP_Http request parameters, including timeout
@@ -54,10 +54,9 @@ abstract class GeoMashupHttpGeocoder {
 			'request_params' => array( 'timeout' => 3.0 )
 		);
 		$args = wp_parse_args( $args, $defaults );
-		extract( $args );
-		$this->language = GeoMashupDB::primary_language_code( $language );
-		$this->max_results = absint( $max_results );
-		$this->request_params = $request_params;
+		$this->language = GeoMashupDB::primary_language_code( $args['language'] );
+		$this->max_results = absint( $args['max_results'] );
+		$this->request_params = $args['request_params'];
 		if( !class_exists( 'WP_Http' ) )
 			include_once( ABSPATH . WPINC. '/class-http.php' );
 		$this->http = new WP_Http();
@@ -179,7 +178,6 @@ class GeoMashupGeonamesGeocoder extends GeoMashupHttpGeocoder {
 	}
 
 	public function reverse_geocode( $lat, $lng ) {
-		global $geo_mashup_options;
 
 		if ( !is_numeric( $lat ) or !is_numeric( $lng ) ) // Bad Request
 			return new WP_Error( 'bad_reverse_geocode_request', __( 'Reverse geocoding requires numeric coordinates.', 'GeoMashup' ) );
@@ -332,22 +330,44 @@ class GeoMashupGoogleGeocoder extends GeoMashupHttpGeocoder {
 	 * @return array Locations.
 	 */
 	private function query( $query_type, $query ) {
-		$google_geocode_url = 'http://maps.google.com/maps/api/geocode/json?sensor=false&' . $query_type . '=' .
-			self::url_utf8_encode( $query ) . '&language=' . $this->language;
+		global $geo_mashup_options;
+
+		$google_geocode_url = 'https://maps.google.com/maps/api/geocode/json?' . $query_type . '=' .
+			self::url_utf8_encode( $query ) . '&language=' . $this->language .
+			'&key=' . self::url_utf8_encode( $geo_mashup_options->get( 'overall', 'google_server_key' ) );
 
 		$response = $this->http->get( $google_geocode_url, $this->request_params );
-		if ( is_wp_error( $response ) )
+		if ( is_wp_error( $response ) ) {
 			return $response;
+		}
 
 		$status = $response['response']['code'];
-		if ( '200' != $status )
-			return new WP_Error( 'geocoder_http_request_failed', $status . ': ' . $response['response']['message'], $response );
+		if ( '200' != $status ) {
+			return new WP_Error(
+				'geocoder_http_request_failed',
+				$status . ': ' . $response['response']['message'],
+				$response
+			);
+		}
 
 		$data = json_decode( $response['body'] );
-		if ( 'ZERO_RESULTS' == $data->status )
+		if ( 'ZERO_RESULTS' == $data->status ) {
 			return array();
-		if ( 'OK' != $data->status ) // status of OVER_QUERY_LIMIT, REQUEST_DENIED, INVALID_REQUEST, etc.
-			return new WP_Error( 'geocoder_request_failed', sprintf( __( 'The geocoding request failed with status %s.', 'GeoMashup' ), $status), $data );
+		}
+
+		if ( 'OK' != $data->status ) {
+			// status of OVER_QUERY_LIMIT, REQUEST_DENIED, INVALID_REQUEST, etc.
+			return new WP_Error(
+				'geocoder_request_failed',
+				sprintf(
+					__( 'Failed to geocode "%s" with status %s and body %s.', 'GeoMashup' ),
+					$query,
+					$status,
+					$response['body']
+				),
+				$data
+			);
+		}
 
 		if ( count( $data->results ) > $this->max_results )
 			$data->results = array_slice( $data->results, 0, $this->max_results );

@@ -1,12 +1,12 @@
 <?php
 
-require_once Wordless::join_paths(dirname(dirname(dirname(__FILE__))), 'vendor/lorem/LoremIpsum.class.php');
-Wordless::require_once_dir(Wordless::join_paths(dirname(__FILE__), "placeholder_images"));
+Wordless::require_once_dir(Wordless::join_paths(dirname(dirname(dirname(__FILE__))), "vendor/lorem"));
+Wordless::require_once_dir(Wordless::join_paths(dirname(dirname(dirname(__FILE__))), "vendor/lorem/PlaceholderImage"));
 
 /**
  * Provides methods for use of placeholders (images or text).
  * 
- * @copyright welaika &copy; 2011 - MIT License
+ * @copyright welaika (c) 2011-2014 - MIT License
  * 
  * @ingroup helperclass
  */
@@ -36,8 +36,12 @@ class FakerHelper {
    */
   public function placeholder_image($width, $height, $options = array()) {
     $services_class = array(
-      'placehold' => 'PlaceholdImage',
-      'lorem_pixel' => 'LoremPixelImage'
+      'placehold'   => 'PlaceholdImage',
+      'lorem_pixel' => 'LoremPixelImage',
+      'placecage'   => 'PlaceCageImage',
+      'fillmurray'  => 'FillMurrayImage',
+      'placepuppy'  => 'PlacePuppyImage',
+      'phold'       => 'PHoldImage'
     );
 
     $service = isset($options['service']) ? $options['service'] : NULL;

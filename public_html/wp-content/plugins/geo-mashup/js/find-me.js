@@ -1,1 +1,76 @@
-jQuery(function(a){a(".geo-mashup-search-find-me").show().click(function(){var b=a(this),j=b.parent("form"),d=j.find("input.geo-mashup-search-input"),c=j.find("input[name=geolocation]"),e=j.find("input[name=geo_mashup_search_submit]"),i,h=function(m,k){var l="http://www.geoplugin.net/extras/location.gp?jsoncallback=?&format=json&lat="+encodeURIComponent(m)+"&long="+encodeURIComponent(k);clearTimeout(i);b.hide();c.val(m+","+k);a.getJSON(l,function(n){if(n.geoplugin_place&&n.geoplugin_region){d.val(n.geoplugin_place+", "+n.geoplugin_region)}else{d.val(geo_mashup_search_find_me_env.my_location_message)}}).error(function(){d.val(geo_mashup_search_find_me_env.my_location_message)});e.focus()},g=function(){clearTimeout(i);b.hide();d.val(geo_mashup_search_find_me_env.fail_message)},f=function(){var k;clearTimeout(i);if(!geo_mashup_search_find_me_env.client_ip){g()}k="http://www.geoplugin.net/json.gp?jsoncallback=?&ip="+geo_mashup_search_find_me_env.client_ip;a.getJSON(k,function(l){if(l.geoplugin_latitude&&l.geoplugin_longitude){h(l.geoplugin_latitude,l.geoplugin_longitude)}else{g()}}).error(g)};b.prop("disabled",true);d.change(function(){c.val("")});if(navigator.geolocation){navigator.geolocation.getCurrentPosition(function(k){h(k.coords.latitude,k.coords.longitude)},function(k){f()},{timeout:4000});i=setTimeout(f,10000)}return false})});
+/*global jQuery, geo_mashup_search_find_me_env */
+/*jslint browser: true */
+
+jQuery( function( $ ) {
+	$( '.geo-mashup-search-find-me' ).show().click( function() {
+		var $button = $( this ),
+			$form = $button.closest('form'),
+			$search_input = $form.find( 'input.geo-mashup-search-input' ),
+			$geolocation_input = $form.find( 'input[name=geolocation]' ),
+			$submit_button = $form.find( 'input[name=geo_mashup_search_submit]' ),
+			ignore_timeout,
+
+			succeed = function( lat, lng ) {
+				var geoplugin_url = 'http://www.geoplugin.net/extras/location.gp?jsoncallback=?&format=json&lat=' + 
+					encodeURIComponent( lat ) + '&long=' + encodeURIComponent( lng );
+				clearTimeout( ignore_timeout );
+				$button.hide();
+				$geolocation_input.val( lat + ',' + lng );
+				$.getJSON( geoplugin_url, function( data ) {
+					if ( data.geoplugin_place && data.geoplugin_region ) {
+						$search_input.val( data.geoplugin_place + ', ' + data.geoplugin_region );
+					} else {
+						$search_input.val( geo_mashup_search_find_me_env.my_location_message );
+					}
+				} ).error( function() {
+					$search_input.val( geo_mashup_search_find_me_env.my_location_message );
+				} );
+				$submit_button.focus();
+			},
+
+			fail = function() {
+				clearTimeout( ignore_timeout );
+				$button.hide();
+				$search_input.val( geo_mashup_search_find_me_env.fail_message );
+			},
+			
+			alternateGeolocation = function() {
+				var geoplugin_url;
+					
+				clearTimeout( ignore_timeout );
+
+				if ( !geo_mashup_search_find_me_env.client_ip ) {
+					fail();
+				}
+				geoplugin_url = 'http://www.geoplugin.net/json.gp?jsoncallback=?&ip=' + 
+					geo_mashup_search_find_me_env.client_ip;
+				$.getJSON( geoplugin_url, function( data ) {
+					if ( data.geoplugin_latitude && data.geoplugin_longitude ) {
+						succeed( data.geoplugin_latitude, data.geoplugin_longitude );
+					} else {
+						fail();
+					}
+				} ).error( fail );
+			};
+
+		$button.prop( 'disabled', true );
+
+		$search_input.change( function() {
+			$geolocation_input.val( '' );
+		} );
+
+		if ( navigator.geolocation ) {
+			navigator.geolocation.getCurrentPosition( function( position ) {
+				succeed( position.coords.latitude, position.coords.longitude );
+			}, function( error ) {
+				alternateGeolocation();
+			}, {timeout: 4000} );
+
+			// Firefox needs another timer, because nothing happens if the user chooses "not now"
+			ignore_timeout = setTimeout( alternateGeolocation, 10000 );
+
+		}
+
+		return false; // Don't submit
+	});
+});

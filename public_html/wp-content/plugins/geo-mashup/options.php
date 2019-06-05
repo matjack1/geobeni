@@ -30,8 +30,11 @@ function geo_mashup_options_page() {
 		
 		if ( empty( $_POST['overall']['located_post_types'] ) ) 
 			$_POST['overall']['located_post_types']  = array();
-		
-		if ( empty( $_POST['overall']['include_taxonomies'] ) ) 
+
+		if ( empty( $_POST['overall']['located_object_name'] ) )
+			$_POST['overall']['located_object_name']  = array();
+
+		if ( empty( $_POST['overall']['include_taxonomies'] ) )
 			$_POST['overall']['include_taxonomies']  = array();
 
 		if ( 'true' != $geo_mashup_options->get( 'overall', 'copy_geodata' ) and isset( $_POST['overall']['copy_geodata'] ) )
@@ -70,7 +73,7 @@ function geo_mashup_options_page() {
 		if ( !$test_transient ) {
 			echo '<div class="updated fade">';
 			_e( 'WordPress transients may not be working. Try deactivating or reconfiguring caching plugins.', 'GeoMashup' );
-			echo ' <a href="https://code.google.com/p/wordpress-geo-mashup/issues/detail?id=425">issue 425</a>';
+			echo ' <a href="https://github.com/cyberhobo/wordpress-geo-mashup/issues/425">issue 425</a>';
 			echo '</div>';
 			unset( $_POST['geo_mashup_run_tests'] );
 		} else {
@@ -152,9 +155,9 @@ function geo_mashup_options_page() {
 		'only' => __('Only', 'GeoMashup'));
 
 	$mapApis = Array(
-		'google' => __( 'Google v2', 'GeoMashup' ),
 		'googlev3' => __( 'Google v3', 'GeoMashup' ),
-		'openlayers' => __( 'OpenLayers', 'GeoMashup' )
+		'openlayers' => __( 'OpenLayers', 'GeoMashup' ),
+		'leaflet' => __( 'Leaflet', 'GeoMashup' ),
 	);
 
 	$zoomOptions = Array( 'auto' => __( 'auto', 'GeoMashup' ) );
@@ -162,8 +165,12 @@ function geo_mashup_options_page() {
 		$zoomOptions[$i] = $i;
 	}
 
+	$clusterZoomOptions = Array( '' => __( '0 (Clustering Off)', 'GeoMashup' ) );
+	for ( $i = 1; $i < GEO_MASHUP_MAX_ZOOM; $i++ ) {
+		$clusterZoomOptions[$i] = $i;
+	}
+
 	$selected_tab = ( empty( $_POST['geo_mashup_selected_tab'] ) ) ? 0 : $_POST['geo_mashup_selected_tab'];
-	$google_key = $geo_mashup_options->get( 'overall', 'google_key' );
 	$include_taxonomies = $geo_mashup_options->get( 'overall', 'include_taxonomies' );
 	$map_api = $geo_mashup_options->get( 'overall', 'map_api' );
 
@@ -186,7 +193,8 @@ function geo_mashup_options_page() {
 				// Remove the trailing comma
 				$(this).val( $(this).val().replace( /,\s*$/, '' ) );
 			}
-		} ).keypress( function( e ) {
+		} );
+		$( 'input.overall-submit' ).keypress( function( e ) {
 			if ( ( e.keyCode && e.keyCode === 13 ) || ( e.which && e.which === 13 ) ) {
 				e.preventDefault();
 				$( '#overall-submit' ).click();
@@ -216,7 +224,9 @@ function geo_mashup_options_page() {
 			<li><a href="#geo-mashup-single-map-settings"><span><?php _e('Single Maps', 'GeoMashup'); ?></span></a></li>
 			<li><a href="#geo-mashup-global-map-settings"><span><?php _e('Global Maps', 'GeoMashup'); ?></span></a></li>
 			<li><a href="#geo-mashup-context-map-settings"><span><?php _e('Contextual Maps', 'GeoMashup'); ?></span></a></li>
-			<li><a href="#geo-mashup-tests"><span><?php _e('Tests', 'GeoMashup'); ?></span></a></li>
+			<?php if ( defined( 'WP_DEBUG' ) and WP_DEBUG ) : ?>
+				<li><a href="#geo-mashup-tests"><span><?php _e('Tests', 'GeoMashup'); ?></span></a></li>
+			<?php endif; ?>
 			</ul>
 			<fieldset id="geo-mashup-overall-settings">
 				<?php wp_nonce_field('geo-mashup-update-options'); ?>
@@ -226,6 +236,29 @@ function geo_mashup_options_page() {
 					value="<?php echo $selected_tab; ?>" />
 				<p><?php _e('Overall Geo Mashup Settings', 'GeoMashup'); ?></p>
 				<table width="100%" cellspacing="2" cellpadding="5" class="editform">
+					<tr>
+						<th scope="row">
+							<?php _e( 'Google Server Key', 'GeoMashup' ); ?>
+						</th>
+						<td>
+							<input id="google_server_key"
+							       name="overall[google_server_key]"
+							       class="overall-submit"
+							       type="text"
+							       size="40"
+							       value="<?php echo esc_attr( $geo_mashup_options->get( 'overall', 'google_server_key' ) ); ?>" />
+							<a href="https://developers.google.com/maps/documentation/geocoding/start#get-a-key"
+								target="_blank"><?php _e('Get yours here', 'GeoMashup'); ?></a>
+							<p class="description">
+								<?php
+								_e(
+									'Used for address and location searches, recommended but not required. You can still use any map provider.',
+									'GeoMashup'
+								);
+								?>
+							</p>
+						</td>
+					</tr>
 					<tr>
 						<th scope="row">
 							<?php _e('Map Provider', 'GeoMashup'); ?>
@@ -240,46 +273,61 @@ function geo_mashup_options_page() {
 									?>><?php echo esc_html( $label ); ?></option>
 								<?php endforeach; ?>
 							</select>
-							<?php if ( 'google' == $map_api ) : ?>
-								<span class="description">
-									<a href="https://developers.google.com/maps/documentation/javascript/v2/reference"><?php
-									_e( 'Google v2 support expires soon.', 'GeoMashup' );
-									?></a>
-								</span>
-							<?php endif; ?>
 						</td>
 					</tr>
-					<?php if ( 'google' == $map_api ) : ?>
-					<tr>
-						<th width="33%" scope="row"><?php _e('Google API Key', 'GeoMashup'); ?></th>
-						<td<?php if ( empty( $google_key ) ) echo ' class="error"'; ?>>
-							<input id="google_key" 
-								name="overall[google_key]" 
-								type="text" 
-								size="40" 
-								value="<?php echo esc_attr( $geo_mashup_options->get ( 'overall', 'google_key' ) ); ?>" />
-							<a href="http://maps.google.com/apis/maps/signup.html"><?php _e('Get yours here', 'GeoMashup'); ?></a>
-							<?php if ( empty( $google_key ) ) : ?>
-								<p class="description">
-								<?php _e( 'This setting is required for Geo Mashup to work.', 'GeoMashup' ); ?>
-								</p>
-							<?php endif; ?>
-						</td>
-					</tr>
-					<?php endif; ?>
-					<?php if ( 'googlev3' == $map_api ) : ?>
+					<?php if ( 'googlev3' === $map_api ) : ?>
 					<tr>
 						<th width="33%" scope="row"><?php _e('Google API Key', 'GeoMashup'); ?></th>
 						<td>
 							<input id="googlev3_key"
 								name="overall[googlev3_key]"
+								class="overall-submit"
 								type="text"
 								size="40"
 								value="<?php echo esc_attr( $geo_mashup_options->get ( 'overall', 'googlev3_key' ) ); ?>" />
-							<a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key"><?php _e('Get yours here', 'GeoMashup'); ?></a>
+							<a href="https://developers.google.com/maps/documentation/javascript/get-api-key"
+								target="_blank"><?php _e('Get yours here', 'GeoMashup'); ?></a>
 							<p class="description">
-								<?php _e( 'Old Google v2 keys may not work with v3. A key is recommended but not required by Google.' ); ?>
+								<?php
+								_e(
+									'Google now requires a key and will trigger a warning alert without one. Be ready to perform a few steps.',
+									'GeoMashup'
+								);
+								?>
 							</p>
+						</td>
+					</tr>
+					<tr>
+						<th width="33%" scope="row"><?php _e('Snazzy Maps', 'GeoMashup'); ?></th>
+						<td>
+							<?php if ( class_exists( 'GeoMashupSnazzyMaps' ) ) : ?>
+								<span class="dashicons dashicons-yes"></span>
+								<a href="<?php echo admin_url( 'themes.php?page=snazzy_maps' ); ?>">
+									<?php _e( 'Using current Snazzy styles', 'GeoMashup' ); ?>
+								</a>
+								<p class="description">
+									<?php
+									_e(
+										'We\'ve detected that Snazzy Maps is installed and active, cool!',
+										'GeoMashup'
+									);
+									?>
+								</p>
+							<?php else : ?>
+								<span class="dashicons dashicons-admin-appearance"></span>
+								<a href="https://snazzymaps.com/plugins/wordpress?utm_source=geomashup&utm_medium=plugin&utm_campaign=wordpress"
+									target="_blank">
+									<?php _e( 'Get the Snazzy Maps plugin', 'Postmatic' ); ?>
+								</a>
+								<p class="description">
+									<?php
+									_e(
+										'We\'ve partnered with Atmist to make their great plugin work with Geo Mashup!',
+										'GeoMashup'
+									);
+									?>
+								</p>
+							<?php endif; ?>
 						</td>
 					</tr>
 					<?php endif; ?>
@@ -375,6 +423,7 @@ function geo_mashup_options_page() {
 						<td>
 							<input id="import_custom_field"
 								name="overall[import_custom_field]"
+								class="overall-submit"
 								type="text"
 								size="35"
 								value="<?php echo esc_attr( $geo_mashup_options->get ( 'overall', 'import_custom_field' ) ); ?>" /><br/>
@@ -420,6 +469,21 @@ function geo_mashup_options_page() {
 								?> />
 						</td>
 					</tr>
+                    <tr>
+						<th scope="row"><?php _e('GeoNames ID', 'GeoMashup'); ?></th>
+						<td>
+							<input id="geonames_username_text"
+								name="overall[geonames_username]"
+								class="overall-submit"
+								type="text"
+								size="35"
+								value="<?php echo esc_attr( $geo_mashup_options->get ( 'overall', 'geonames_username' ) ); ?>" /><br/>
+							<span class="description"><?php
+								printf( __('Your %sGeoNames username%s, used with GeoNames API requests. Leave the default value to use Geo Mashup\'s.', 'GeoMashup'),
+									'<a href="http://geonames.wordpress.com/2011/01/28/application-identification-for-free-geonames-web-services/" title="">', '</a>' );
+							?></span>
+						</td>
+					</tr>
 					<tr>
 						<th scope="row"><?php _e('Obscure Settings', 'GeoMashup'); ?></th>
 						<td>
@@ -430,34 +494,6 @@ function geo_mashup_options_page() {
 						</td>
 					</tr>
 					<tr class="obscure">
-						<th scope="row"><?php _e('GeoNames ID', 'GeoMashup'); ?></th>
-						<td>
-							<input id="geonames_username_text"
-								name="overall[geonames_username]"
-								type="text"
-								size="35"
-								value="<?php echo esc_attr( $geo_mashup_options->get ( 'overall', 'geonames_username' ) ); ?>" /><br/>
-							<span class="description"><?php
-								printf( __('Your %sGeoNames username%s, used with GeoNames API requests. Leave the default value to use Geo Mashup\'s.', 'GeoMashup'),
-									'<a href="http://geonames.wordpress.com/2011/01/28/application-identification-for-free-geonames-web-services/" title="">', '</a>' );
-							?></span>
-						</td>
-					</tr>
-					<?php if ( 'google' == $map_api ) : ?>
-					<tr class="obscure">
-						<th scope="row"><?php _e('AdSense For Search ID', 'GeoMashup'); ?></th>
-						<td>
-							<input id="adsense_code_text"
-								name="overall[adsense_code]"
-								type="text"
-								size="35"
-								value="<?php echo esc_attr( $geo_mashup_options->get ( 'overall', 'adsense_code' ) ); ?>" /><br/>
-							<span class="description"><?php
-								_e('Your client ID, used with the Google Bar. Leave the default value to use Geo Mashup\'s :).', 'GeoMashup');
-							?></span>
-						</td>
-					</tr>
-					<?php endif; ?>					<tr class="obscure">
 						<th scope="row"><?php _e('Add Category Links', 'GeoMashup'); ?></th>
 						<td>
 							<input id="add_category_links" name="overall[add_category_links]" type="checkbox" value="true"<?php 
@@ -475,8 +511,9 @@ function geo_mashup_options_page() {
 						<td>
 							<input id="category_link_separator" 
 								name="overall[category_link_separator]" 
-								class="add-category-links-dep" 
-								type="text" 
+								class="add-category-links-dep"
+								class="overall-submit"
+								type="text"
 								size="3" 
 								value="<?php echo esc_attr( $geo_mashup_options->get( 'overall', 'category_link_separator' ) ); ?>" />
 						</td>
@@ -485,8 +522,9 @@ function geo_mashup_options_page() {
 						<th scope="row"><?php _e('Category Link Text', 'GeoMashup'); ?></th>
 						<td>
 							<input id="category_link_text" 
-								name="overall[category_link_text]" 
-								type="text" 
+								name="overall[category_link_text]"
+								class="overall-submit"
+								type="text"
 								size="5" 
 								value="<?php echo esc_attr( $geo_mashup_options->get( 'overall', 'category_link_text' ) ); ?>" />
 						</td>
@@ -589,16 +627,6 @@ function geo_mashup_options_page() {
 							}
 						?> /></td>
 					</tr>
-					<?php if ( 'google' == $map_api ) : ?>
-					<tr>
-						<th scope="row"><?php _e('Add Google Bar', 'GeoMashup'); ?></th>
-						<td><input id="in_post_add_google_bar" name="single_map[add_google_bar]" type="checkbox" value="true"<?php 
-							if ( $geo_mashup_options->get ( 'single_map', 'add_google_bar' ) == 'true' ) {
-								echo ' checked="checked"';
-							}
-						?> /></td>
-					</tr>
-					<?php endif; ?>
 					<tr>
 						<th scope="row"><?php _e('Enable Scroll Wheel Zoom', 'GeoMashup'); ?></th>
 						<td><input id="in_post_enable_scroll_wheel_zoom" name="single_map[enable_scroll_wheel_zoom]" type="checkbox" value="true"<?php 
@@ -726,18 +754,6 @@ function geo_mashup_options_page() {
 							?> />
 						</td>
 					</tr>
-					<?php if ( 'google' == $map_api ) : ?>
-					<tr>
-						<th scope="row"><?php _e('Add Google Bar', 'GeoMashup'); ?></th>
-						<td>
-							<input id="add_google_bar" name="global_map[add_google_bar]" type="checkbox" value="true"<?php 
-								if ($geo_mashup_options->get ( 'global_map', 'add_google_bar' ) == 'true') {
-									echo ' checked="checked"';
-								}
-							?> />
-						</td>
-					</tr>
-					<?php endif; ?>
 					<tr>
 						<th scope="row"><?php _e('Enable Scroll Wheel Zoom', 'GeoMashup'); ?></th>
 						<td><input id="enable_scroll_wheel_zoom" name="global_map[enable_scroll_wheel_zoom]" type="checkbox" value="true"<?php 
@@ -763,18 +779,25 @@ function geo_mashup_options_page() {
 							?></span>
 						</td>
 					</tr>
-					<?php if ( 'google' == substr( $map_api, 0, 6 ) ) : ?>
+					<?php if ( 'googlev3' == $map_api ) : ?>
 					<tr>
-						<th scope="row"><?php _e('Cluster Markers Until Zoom Level', 'GeoMashup'); ?></th>
+						<th scope="row"><?php _e('Clustering', 'GeoMashup'); ?></th>
 						<td>
-							<input id="cluster_max_zoom"
-								name="global_map[cluster_max_zoom]" 
-								type="text" 
-								size="2" 
-								value="<?php echo esc_attr( $geo_mashup_options->get( 'global_map', 'cluster_max_zoom' ) ); ?>" />
-							<span class="description"><?php
-								_e( 'Highest zoom level to cluster markers, or blank for no clustering.', 'GeoMashup'); 
-							?></span>
+							<?php
+							printf(
+								__( 'Cluster markers from zoom level 0 to %s', 'GeoMashup' ),
+								'' // just a placeholder, really expecting the input
+							);
+							?>
+							<select id="cluster_max_zoom" name="global_map[cluster_max_zoom]">
+								<?php foreach ( $clusterZoomOptions as $value => $label ) : ?>
+									<option value="<?php echo esc_attr( $value ); ?>"<?php
+									if ( strcmp( $value, $geo_mashup_options->get( 'global_map', 'cluster_max_zoom' ) ) == 0 ) {
+										echo ' selected="selected"';
+									}
+									?>><?php echo esc_html( $label ); ?></option>
+								<?php endforeach; ?>
+							</select>
 						</td>
 					</tr>
 					<?php endif; ?>
@@ -973,18 +996,6 @@ function geo_mashup_options_page() {
 							?> />
 						</td>
 					</tr>
-					<?php if ( 'google' == $map_api ) : ?>
-					<tr>
-						<th scope="row"><?php _e('Add Google Bar', 'GeoMashup'); ?></th>
-						<td>
-							<input id="context_add_google_bar" name="context_map[add_google_bar]" type="checkbox" value="true"<?php 
-							if ($geo_mashup_options->get ( 'context_map', 'add_google_bar' ) == 'true') {
-								echo ' checked="checked"';
-							}
-						?> />
-						</td>
-					</tr>
-					<?php endif; ?>
 					<tr>
 						<th scope="row"><?php _e('Enable Scroll Wheel Zoom', 'GeoMashup'); ?></th>
 						<td><input id="context_enable_scroll_wheel_zoom" name="context_map[enable_scroll_wheel_zoom]" type="checkbox" value="true"<?php
@@ -1054,18 +1065,20 @@ function geo_mashup_options_page() {
 				</table>
 				<div class="submit"><input type="submit" name="submit" value="<?php _e('Update Options', 'GeoMashup'); ?>" /></div>
 			</fieldset>
-			<fieldset id="geo-mashup-tests">
-				<p>
-					<?php _e('Some checks that Geo Mashup is working properly.', 'GeoMashup'); ?>
-					<?php _e('Not working in Firefox yet - free Geo Mashup license to the first to figure out why!', 'GeoMashup'); ?>
-				</p>
-				<?php if ( isset( $_POST['geo_mashup_run_tests'] ) ) : ?>
-					<div id="qunit-fixture"></div>
-					<div id="qunit"></div>
-				<?php else : ?>
-					<input type="submit" name="geo_mashup_run_tests" value="<?php _e('Run Tests', 'GeoMashup'); ?>" class="button" />
-				<?php endif; ?>
-			</fieldset>
+			<?php if ( defined( 'WP_DEBUG' ) and WP_DEBUG ) : ?>
+				<fieldset id="geo-mashup-tests">
+					<p>
+						<?php _e('Some checks that Geo Mashup is working properly.', 'GeoMashup'); ?>
+						<?php _e('Not working in Firefox yet - free Geo Mashup license to the first to figure out why!', 'GeoMashup'); ?>
+					</p>
+					<?php if ( isset( $_POST['geo_mashup_run_tests'] ) ) : ?>
+						<div id="qunit-fixture"></div>
+						<div id="qunit"></div>
+					<?php else : ?>
+						<input type="submit" name="geo_mashup_run_tests" value="<?php _e('Run Tests', 'GeoMashup'); ?>" class="button" />
+					<?php endif; ?>
+				</fieldset>
+			<?php endif; ?>
 		</form>
 		<?php if ( isset( $_GET['view_activation_log'] ) ) : ?>
 		<div class="updated">
@@ -1080,22 +1093,7 @@ function geo_mashup_options_page() {
 		<?php else : ?>
 		<p><a href="<?php echo $_SERVER['REQUEST_URI']; ?>&amp;view_activation_log=1"><?php _e('View Update Log', 'GeoMashup'); ?></a></p>
 		<?php endif; ?>
-		<p><a href="http://code.google.com/p/wordpress-geo-mashup/wiki/Documentation"><?php _e('Geo Mashup Documentation', 'GeoMashup'); ?></a></p>
-		<p>
-			<a href="http://wpquestions.com/affiliates/register/name/cyberhobo">
-				<img src="<?php echo path_join( GEO_MASHUP_URL_PATH, 'images/wpquestions-logo.png' ); ?>" alt="WP Questions">
-			</a>
-		</p>
-		<p>Geo Mashup needs you: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=11045324">donate</a>,
-		contribute <a href="http://wiki.geo-mashup.org/guides">a guide</a>
-		or <a href="http://code.google.com/p/wordpress-geo-mashup/source/checkout">code</a>,
-		share your experience in the <a href="http://groups.google.com/group/wordpress-geo-mashup-plugin">community discussion group</a>,
-		or use this HTML to add a link to your site:
-		<input id="geo-mashup-credit-input" type="text" size="80" value="<?php
-			echo esc_attr( '<a href="http://code.google.com/p/wordpress-geo-mashup/" title="Geo Mashup"><img src="' . path_join( GEO_MASHUP_URL_PATH, 'images/gm-credit.png' ) . '" alt="Geo Mashup" /></a>' );
-			?>" /><br />
-		Thanks!
-		</p>
+		<p><a href="https://github.com/cyberhobo/wordpress-geo-mashup/wiki/Getting-Started"><?php _e('Geo Mashup Documentation', 'GeoMashup'); ?></a></p>
 		<script type="text/javascript"> jQuery( function( $ ) { $( '#geo-mashup-credit-input' ).focus( function() { this.select(); } ) } ); </script>
 	</div>
 <?php

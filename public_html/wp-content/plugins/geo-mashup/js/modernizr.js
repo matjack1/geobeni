@@ -1,1 +1,217 @@
-window.Modernizr=(function(n,s,i){var e="2.6.2",l={},A=s.documentElement,B="modernizr",y=s.createElement(B),o=y.style,f,v={}.toString,c="Webkit Moz O ms",D=c.split(" "),p=c.toLowerCase().split(" "),j={},d={},t={},x=[],u=x.slice,b,r=({}).hasOwnProperty,z;if(!k(r,"undefined")&&!k(r.call,"undefined")){z=function(F,G){return r.call(F,G)}}else{z=function(F,G){return((G in F)&&k(F.constructor.prototype[G],"undefined"))}}if(!Function.prototype.bind){Function.prototype.bind=function E(H){var I=this;if(typeof I!="function"){throw new TypeError()}var F=u.call(arguments,1),G=function(){if(this instanceof G){var L=function(){};L.prototype=I.prototype;var K=new L();var J=I.apply(K,F.concat(u.call(arguments)));if(Object(J)===J){return J}return K}else{return I.apply(H,F.concat(u.call(arguments)))}};return G}}function q(F){o.cssText=F}function h(G,F){return q(prefixes.join(G+";")+(F||""))}function k(G,F){return typeof G===F}function m(G,F){return !!~(""+G).indexOf(F)}function C(H,F){for(var G in H){var I=H[G];if(!m(I,"-")&&o[I]!==i){return F=="pfx"?I:true}}return false}function w(G,J,I){for(var F in G){var H=J[G[F]];if(H!==i){if(I===false){return G[F]}if(k(H,"function")){return H.bind(I||J)}return H}}return false}function a(J,F,I){var G=J.charAt(0).toUpperCase()+J.slice(1),H=(J+" "+D.join(G+" ")+G).split(" ");if(k(F,"string")||k(F,"undefined")){return C(H,F)}else{H=(J+" "+(p).join(G+" ")+G).split(" ");return w(H,F,I)}}j.backgroundsize=function(){return a("backgroundSize")};for(var g in j){if(z(j,g)){b=g.toLowerCase();l[b]=j[g]();x.push((l[b]?"":"no-")+b)}}l.addTest=function(G,H){if(typeof G=="object"){for(var F in G){if(z(G,F)){l.addTest(F,G[F])}}}else{G=G.toLowerCase();if(l[G]!==i){return l}H=typeof H=="function"?H():H;if(typeof enableClasses!=="undefined"&&enableClasses){A.className+=" "+(H?"":"no-")+G}l[G]=H}return l};q("");y=f=null;l._version=e;l._domPrefixes=p;l._cssomPrefixes=D;l.testProp=function(F){return C([F])};l.testAllProps=a;return l})(this,this.document);
+/* Modernizr 2.6.2 (Custom Build) | MIT & BSD
+ * Build: http://modernizr.com/download/#-backgroundsize-testprop-testallprops-domprefixes
+ */
+;
+
+
+
+window.Modernizr = (function( window, document, undefined ) {
+
+    var version = '2.6.2',
+
+    Modernizr = {},
+
+
+    docElement = document.documentElement,
+
+    mod = 'modernizr',
+    modElem = document.createElement(mod),
+    mStyle = modElem.style,
+
+    inputElem  ,
+
+
+    toString = {}.toString,    omPrefixes = 'Webkit Moz O ms',
+
+    cssomPrefixes = omPrefixes.split(' '),
+
+    domPrefixes = omPrefixes.toLowerCase().split(' '),
+
+
+    tests = {},
+    inputs = {},
+    attrs = {},
+
+    classes = [],
+
+    slice = classes.slice,
+
+    featureName,
+
+
+
+    _hasOwnProperty = ({}).hasOwnProperty, hasOwnProp;
+
+    if ( !is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined') ) {
+      hasOwnProp = function (object, property) {
+        return _hasOwnProperty.call(object, property);
+      };
+    }
+    else {
+      hasOwnProp = function (object, property) { 
+        return ((property in object) && is(object.constructor.prototype[property], 'undefined'));
+      };
+    }
+
+
+    if (!Function.prototype.bind) {
+      Function.prototype.bind = function bind(that) {
+
+        var target = this;
+
+        if (typeof target != "function") {
+            throw new TypeError();
+        }
+
+        var args = slice.call(arguments, 1),
+            bound = function () {
+
+            if (this instanceof bound) {
+
+              var F = function(){};
+              F.prototype = target.prototype;
+              var self = new F();
+
+              var result = target.apply(
+                  self,
+                  args.concat(slice.call(arguments))
+              );
+              if (Object(result) === result) {
+                  return result;
+              }
+              return self;
+
+            } else {
+
+              return target.apply(
+                  that,
+                  args.concat(slice.call(arguments))
+              );
+
+            }
+
+        };
+
+        return bound;
+      };
+    }
+
+    function setCss( str ) {
+        mStyle.cssText = str;
+    }
+
+    function setCssAll( str1, str2 ) {
+        return setCss(prefixes.join(str1 + ';') + ( str2 || '' ));
+    }
+
+    function is( obj, type ) {
+        return typeof obj === type;
+    }
+
+    function contains( str, substr ) {
+        return !!~('' + str).indexOf(substr);
+    }
+
+    function testProps( props, prefixed ) {
+        for ( var i in props ) {
+            var prop = props[i];
+            if ( !contains(prop, "-") && mStyle[prop] !== undefined ) {
+                return prefixed == 'pfx' ? prop : true;
+            }
+        }
+        return false;
+    }
+
+    function testDOMProps( props, obj, elem ) {
+        for ( var i in props ) {
+            var item = obj[props[i]];
+            if ( item !== undefined) {
+
+                            if (elem === false) return props[i];
+
+                            if (is(item, 'function')){
+                                return item.bind(elem || obj);
+                }
+
+                            return item;
+            }
+        }
+        return false;
+    }
+
+    function testPropsAll( prop, prefixed, elem ) {
+
+        var ucProp  = prop.charAt(0).toUpperCase() + prop.slice(1),
+            props   = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
+
+            if(is(prefixed, "string") || is(prefixed, "undefined")) {
+          return testProps(props, prefixed);
+
+            } else {
+          props = (prop + ' ' + (domPrefixes).join(ucProp + ' ') + ucProp).split(' ');
+          return testDOMProps(props, prefixed, elem);
+        }
+    }    tests['backgroundsize'] = function() {
+        return testPropsAll('backgroundSize');
+    };
+    for ( var feature in tests ) {
+        if ( hasOwnProp(tests, feature) ) {
+                                    featureName  = feature.toLowerCase();
+            Modernizr[featureName] = tests[feature]();
+
+            classes.push((Modernizr[featureName] ? '' : 'no-') + featureName);
+        }
+    }
+
+
+
+     Modernizr.addTest = function ( feature, test ) {
+       if ( typeof feature == 'object' ) {
+         for ( var key in feature ) {
+           if ( hasOwnProp( feature, key ) ) {
+             Modernizr.addTest( key, feature[ key ] );
+           }
+         }
+       } else {
+
+         feature = feature.toLowerCase();
+
+         if ( Modernizr[feature] !== undefined ) {
+                                              return Modernizr;
+         }
+
+         test = typeof test == 'function' ? test() : test;
+
+         if (typeof enableClasses !== "undefined" && enableClasses) {
+           docElement.className += ' ' + (test ? '' : 'no-') + feature;
+         }
+         Modernizr[feature] = test;
+
+       }
+
+       return Modernizr; 
+     };
+
+
+    setCss('');
+    modElem = inputElem = null;
+
+
+    Modernizr._version      = version;
+
+    Modernizr._domPrefixes  = domPrefixes;
+    Modernizr._cssomPrefixes  = cssomPrefixes;
+
+
+
+    Modernizr.testProp      = function(prop){
+        return testProps([prop]);
+    };
+
+    Modernizr.testAllProps  = testPropsAll;
+
+
+    return Modernizr;
+
+})(this, this.document);
+;

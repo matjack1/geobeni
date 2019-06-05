@@ -1,1 +1,862 @@
-GeoMashup.loadFullPost=function(a){var c,e,b,f,d;f=this.getObjectsAtLocation(a);d=this.getOnObjectIDs(f);b=this.locationCache(a,"full-post-"+d.join(","));if(b.html){this.getShowPostElement().innerHTML=b.html}else{this.getShowPostElement().innerHTML='<div align="center"><img src="'+this.opts.url_path+'/images/busy_icon.gif" alt="Loading..." /></div>';e={url:this.geo_query_url+"&object_name="+this.opts.object_name+"&object_ids="+d.join(",")+"&template=full-post"};this.doAction("fullPostRequest",f,e);jQuery.get(e.url,function(h){var g={content:h};GeoMashup.doAction("fullPostLoad",f,g);b.html=g.content;jQuery(GeoMashup.getShowPostElement()).html(g.content);GeoMashup.doAction("fullPostChanged")})}};GeoMashup.createTermLine=function(a,d,c){var b={color:c.color,width:5,opacity:0.5,visible:true,taxonomy:a,term_id:d};c.line=new mxn.Polyline(c.points);this.doAction("termLine",c.line,a,d,c);this.doAction("categoryLine",this.opts,c.line);this.doAction("termLineOptions",b,a,d,c);this.doAction("categoryLineOptions",this.opts,b);this.map.addPolylineWithData(c.line,b);if(this.map.getZoom()>c.max_line_zoom){this.hideLine(c.line)}};GeoMashup.openInfoWindow=function(b){var g,c,e,d,f,a=b.location;if(this.open_window_marker&&!this.opts.multiple_info_windows){this.open_window_marker.closeBubble()}e=this.getOnObjectIDs(this.getObjectsAtLocation(a));c=this.locationCache(a,"info-window-"+e.join(","));if(c.html){b.setInfoBubble(c.html);b.openBubble()}else{b.setInfoBubble('<div align="center"><img src="'+this.opts.url_path+'/images/busy_icon.gif" alt="Loading..." /></div>');b.openBubble();this.open_window_marker=b;g={url:this.geo_query_url+"&object_name="+this.opts.object_name+"&object_ids="+e.join(",")};this.doAction("markerInfoWindowRequest",b,g);jQuery.get(g.url,function(i){var h={content:i};b.closeBubble();GeoMashup.doAction("markerInfoWindowLoad",b,h);c.html=GeoMashup.parentizeLinksMarkup(h.content);b.setInfoBubble(c.html);b.openBubble()})}};GeoMashup.closeInfoWindow=function(a){a.closeBubble()};GeoMashup.addGlowMarker=function(b){var a=b.location,c={clickable:true,icon:this.opts.url_path+"/images/mm_20_glow.png",iconSize:[22,30],iconAnchor:[11,27]};if(this.glow_marker){this.removeGlowMarker()}this.doAction("glowMarkerIcon",this.opts,c);this.glow_marker=new mxn.Marker(a);this.glow_marker.addData(c);this.glow_marker.click.addHandler(function(){GeoMashup.deselectMarker()});this.map.addMarker(this.glow_marker)};GeoMashup.removeGlowMarker=function(){if(this.glow_marker){this.glow_marker.hide();this.map.removeMarker(this.glow_marker);this.glow_marker=null}};GeoMashup.hideAttachments=function(){var b,a,c};GeoMashup.showMarkerAttachments=function(a){var b,c=[];this.hideAttachments();b=this.getOnObjectIDs(this.getMarkerObjects(a));jQuery.each(b,function(d,f){var e=GeoMashup.locationCache(a.location,"attachments-"+f);if(e.urls){jQuery.each(e.urls,function(h,g){GeoMashup.open_attachments.push(g);GeoMashup.map.addOverlay(g)})}else{c.push(f)}});jQuery.each(c,function(e,f){var d={action:"geo_mashup_kml_attachments"};d.post_ids=f;jQuery.getJSON(GeoMashup.opts.ajaxurl+"?callback=?",d,function(h){var g=GeoMashup.locationCache(a.location,"attachments-"+f);if(!g.urls){g.urls=[]}jQuery.each(h,function(k,i){g.urls.push(i);GeoMashup.open_attachments.push(i);GeoMashup.map.addOverlay(i)})})})};GeoMashup.addObjectIcon=function(a){if(typeof customGeoMashupCategoryIcon==="function"&&a.terms&&a.terms.hasOwnProperty("category")){a.icon=customGeoMashupCategoryIcon(GeoMashup.opts,a.terms.category)}if(!a.icon){jQuery.each(a.terms,function(b,d){var c;if(d.length>1){a.icon=GeoMashup.clone(GeoMashup.multiple_term_icon);return false}else{if(d.length===1){c=GeoMashup.term_manager.getTermData(b,d[0],"icon");if(a.icon&&a.icon.image!==c.image){a.icon=GeoMashup.clone(GeoMashup.multiple_term_icon);return false}else{a.icon=GeoMashup.clone(c)}}}});if(!a.icon){a.icon=GeoMashup.colorIcon("red")}this.doAction("objectIcon",GeoMashup.opts,a)}};GeoMashup.createMarker=function(a,d){var b,c;if(!d.icon){this.addObjectIcon(d)}c={label:d.title,icon:d.icon.image,iconSize:d.icon.iconSize,iconShadow:d.icon.iconShadow,iconAnchor:d.icon.iconAnchor,iconShadowSize:d.icon.shadowSize,visible:true};this.doAction("objectMarkerOptions",this.opts,c,d);b=new mxn.Marker(a);b.addData(c);b.click.addHandler(function(){if(b===GeoMashup.selected_marker){GeoMashup.deselectMarker()}else{GeoMashup.selectMarker(b)}});this.doAction("marker",this.opts,b);return b};GeoMashup.clickObjectMarker=function(c,a){var b=this.objects[c];if(!GeoMashup.isObjectOn(b)){return false}if(typeof a==="undefined"){a=1}if(b&&b.marker&&a<4){if(a<2){a+=1;setTimeout(function(){GeoMashup.clickObjectMarker(c,a)},1000)}else{b.marker.click.fire()}}};GeoMashup.colorIcon=function(a){var b=this.clone(this.base_color_icon);b.image=this.opts.url_path+"/images/mm_20_"+a+".png";return b};GeoMashup.getMarkerLatLng=function(a){return a.location};GeoMashup.hideMarker=function(a){if(a===this.selected_marker){this.deselectMarker()}a.hide()};GeoMashup.showMarker=function(a){a.show()};GeoMashup.hideLine=function(a){try{a.hide()}catch(b){this.map.removePolyline(a)}a.setAttribute("visible",false)};GeoMashup.showLine=function(a){try{a.show()}catch(b){this.map.addPolyline(a)}a.setAttribute("visible",true)};GeoMashup.isLineVisible=function(a){return a.getAttribute("visible")};GeoMashup.newLatLng=function(b,a){return new mxn.LatLonPoint(b,a)};GeoMashup.extendLocationBounds=function(a){if(this.location_bounds){this.location_bounds.extend(a)}else{this.location_bounds=new mxn.BoundingBox(a,a)}};GeoMashup.addMarkers=function(a){this.forEach(a,function(c,b){this.map.addMarker(b)})};GeoMashup.makeMarkerMultiple=function(b){var c,a;if(typeof customGeoMashupMultiplePostImage==="function"){c=customGeoMashupMultiplePostImage(this.opts,b)}if(!c){c=this.opts.url_path+"/images/mm_20_plus.png"}a=b.iconUrl;b.setIcon(c);this.doAction("multiObjectMarker",this.opts,b);this.doAction("multiObjectIcon",this.opts,c);if(b.onmap&&b.iconUrl!==a){this.map.removeMarker(b);this.map.addMarker(b)}};GeoMashup.setMarkerImage=function(a,b){if(a.iconUrl!==b){a.setIcon(b);if(a.onmap){this.map.removeMarker(a);this.map.addMarker(a)}}};GeoMashup.autoZoom=function(){var a=this.map;var b=function(){var c=parseInt(GeoMashup.opts.auto_zoom_max,10);if(a.getZoom()>c){a.setZoom(c)}a.changeZoom.removeHandler(b)};if(typeof this.opts.auto_zoom_max!=="undefined"){this.map.changeZoom.addHandler(b)}this.map.autoCenterAndZoom()};GeoMashup.isMarkerVisible=function(b){var a;try{a=this.map.getBounds()}catch(c){return false}return(b.getAttribute("visible")&&a&&a.contains(b.location))};GeoMashup.centerMarker=function(a,b){if(typeof b==="number"){this.map.setCenterAndZoom(a.location,b)}else{this.map.setCenter(a.location,{},true)}};GeoMashup.createMap=function(k,m){var r,p,q,b,d,c,f,a,o,x,l,s,g,v,w=1,n={},j={};this.container=k;this.base_color_icon={};this.base_color_icon.image=m.url_path+"/images/mm_20_black.png";this.base_color_icon.iconShadow=m.url_path+"/images/mm_20_shadow.png";this.base_color_icon.iconSize=[12,20];this.base_color_icon.shadowSize=[22,20];this.base_color_icon.iconAnchor=[6,20];this.base_color_icon.infoWindowAnchor=[5,1];this.multiple_term_icon=this.clone(this.base_color_icon);this.multiple_term_icon.image=m.url_path+"/images/mm_20_mixed.png";this.forEach(m,function(e,i){if("false"===i||"FALSE"===i){m[e]=false}});this.have_parent_access=false;try{if(typeof parent==="object"){parent.document.getElementById("bogus-test");this.have_parent_access=true}}catch(u){}m.home_url=m.siteurl;d={G_NORMAL_MAP:mxn.Mapstraction.ROAD,G_SATELLITE_MAP:mxn.Mapstraction.SATELLITE,G_HYBRID_MAP:mxn.Mapstraction.HYBRID,G_PHYSICAL_MAP:mxn.Mapstraction.PHYSICAL};if(typeof m.map_type==="string"){if(d[m.map_type]){m.map_type=d[m.map_type]}else{p=parseInt(m.map_type,10);if(isNaN(p)||p>2){m.map_type=d.G_NORMAL_MAP}else{m.map_type=p}}}else{if(typeof m.map_type==="undefined"){m.map_type=d.G_NORMAL_MAP}}this.map=new mxn.Mapstraction(this.container,m.map_api);b={enableDragging:true};b.enableScrollWheelZoom=(m.enable_scroll_wheel_zoom?true:false);if(typeof this.map.enableGeoMashupExtras==="function"){this.map.enableGeoMashupExtras()}this.doAction("mapOptions",m,b);this.map.setOptions(b);this.map.setCenterAndZoom(new mxn.LatLonPoint(0,0),0);this.doAction("newMap",m,this.map);this.spinner_div=document.createElement("div");this.spinner_div.innerHTML='<div id="gm-loading-icon" style="-moz-user-select: none; z-index: 100; position: absolute; left: '+(jQuery(this.container).width()/2)+"px; top: "+(jQuery(this.container).height()/2)+'px;"><img style="border: 0px none ; margin: 0px; padding: 0px; width: 16px; height: 16px; -moz-user-select: none;" src="'+m.url_path+'/images/busy_icon.gif"/></a></div>';this.showLoadingIcon();this.map.load.addHandler(function(){GeoMashup.hideLoadingIcon()});if(!m.object_name){m.object_name="post"}this.opts=m;j.url=m.siteurl+(m.siteurl.indexOf("?")>0?"&":"?")+"geo_mashup_content=geo-query&map_name="+encodeURIComponent(m.name);if(m.lang&&j.url.indexOf("lang=")===-1){j.url+="&lang="+encodeURIComponent(m.lang)}this.doAction("geoQueryUrl",this.opts,j);this.geo_query_url=j.url;this.map.changeZoom.addHandler(function(e,i){GeoMashup.adjustZoom(e,i);GeoMashup.adjustViewport()});this.map.endPan.addHandler(function(){GeoMashup.adjustViewport()});if(m.zoom!=="auto"&&typeof m.zoom==="string"){w=parseInt(m.zoom,10)}else{w=m.zoom}if(m.load_kml){try{m.load_kml=jQuery("<div/>").html(m.load_kml).text();if(w==="auto"){this.map.addOverlay(m.load_kml,true)}else{this.map.addOverlay(m.load_kml)}}catch(t){}}if(this.term_manager){this.term_manager.load()}try{this.map.setMapType(m.map_type)}catch(h){}if(w!=="auto"){if(m.center_lat&&m.center_lng){this.map.setCenterAndZoom(new mxn.LatLonPoint(parseFloat(m.center_lat),parseFloat(m.center_lng)),w)}else{if(m.object_data&&m.object_data.objects[0]){q=new mxn.LatLonPoint(parseFloat(m.object_data.objects[0].lat),parseFloat(m.object_data.objects[0].lng));this.map.setCenterAndZoom(q,w)}else{f=this.geo_query_url+"&limit=1";if(m.map_cat){f+="&map_cat="+m.map_cat}jQuery.getJSON(f,function(e){if(e.length>0){q=new mxn.LatLonPoint(parseFloat(e[0].lat),parseFloat(e[0].lng));this.map.setCenterAndZoom(q,w)}})}}}this.location_bounds=null;if(m.map_content==="single"){if(m.object_data&&m.object_data.objects.length&&!m.load_kml){x={visible:true};if(typeof customGeoMashupSinglePostIcon==="function"){x=customGeoMashupSinglePostIcon(this.opts)}if(!x.image){x=this.colorIcon("red");x.icon=x.image}this.doAction("singleMarkerOptions",this.opts,x);s=new mxn.Marker(new mxn.LatLonPoint(parseFloat(m.object_data.objects[0].lat),parseFloat(m.object_data.objects[0].lng)));this.map.addMarkerWithData(s,x);this.doAction("singleMarker",this.opts,s)}}else{if(m.object_data){this.addObjects(m.object_data.objects,true)}else{this.requestObjects(true);this.requestObjects(false)}}if("GSmallZoomControl"===m.map_control||"GSmallZoomControl3D"===m.map_control){n.zoom="small"}else{if("GSmallMapControl"===m.map_control){n.zoom="small";n.pan=true}else{if("GLargeMapControl"===m.map_control||"GLargeMapControl3D"===m.map_control){n.zoom="large";n.pan=true}}}if(m.add_map_type_control){n.map_type=true}if(m.add_overview_control){n.overview=true}this.map.addControls(n);if(m.add_map_type_control&&typeof this.map.setMapTypes==="function"){if(typeof m.add_map_type_control==="string"){m.add_map_type_control=m.add_map_type_control.split(/\s*,\s*/);if(typeof d[m.add_map_type_control[0]]==="undefined"){m.add_map_type_control=["G_NORMAL_MAP","G_SATELLITE_MAP","G_PHYSICAL_MAP"]}}m.mxn_map_type_control=[];for(r=0;r<m.add_map_type_control.length;r+=1){m.mxn_map_type_control.push(d[m.add_map_type_control[r]])}this.map.setMapTypes(m.mxn_map_type_control)}this.map.load.addHandler(function(){GeoMashup.updateVisibleList()});if(typeof customizeGeoMashupMap==="function"){customizeGeoMashupMap(this.opts,this.map)}if(typeof customizeGeoMashup==="function"){customizeGeoMashup(this)}this.doAction("loadedMap",this.opts,this.map)};
+/**
+ * Mapstraction implementation for Geo Mashup maps.
+ * @fileOverview
+ */
+
+/**
+ * @name AjaxRequestOptions
+ * @class This type represents options used for an AJAX request.
+ * It has no constructor, but is instantiated as an object literal.
+ *
+ * @property {String} url The AJAX request URL.
+ */
+
+/**
+ * @name ContentFilter
+ * @class This type represents objects used to filter content.
+ * It has no constructor, but is instantiated as an object literal.
+ *
+ * @name ContentFilter#content
+ * @property {String} content HTML content to filter.
+ */
+
+/*global GeoMashup */
+/*global customizeGeoMashup, customizeGeoMashupMap, customGeoMashupColorIcon, customGeoMashupCategoryIcon */
+/*global customGeoMashupSinglePostIcon, customGeoMashupMultiplePostImage */
+/*global jQuery, mxn */
+/*jslint browser: true, white: true, sloppy: true */
+
+GeoMashup.loadFullPost = function( point ) {
+	var i,
+		request,
+		cache,
+		objects,
+		object_ids;
+
+	objects = this.getObjectsAtLocation( point );
+	object_ids = this.getOnObjectIDs( objects );
+	cache = this.locationCache( point, 'full-post-' + object_ids.join( ',' ) );
+	if ( cache.html ) {
+
+		this.getShowPostElement().innerHTML = cache.html;
+
+	} else {
+
+		this.getShowPostElement().innerHTML = '<div align="center"><img src="' + this.opts.url_path + '/images/busy_icon.gif" alt="Loading..." /></div>';
+		request = {
+			url: this.geo_query_url + '&object_name=' + this.opts.object_name + '&object_ids=' + object_ids.join( ',' ) + '&template=full-post'
+		};
+		/**
+		 * Requesting full post content.
+		 * @name GeoMashup#fullPostRequest
+		 * @event
+		 * @param {Array} objects Objects included in the request
+		 * @param {AjaxRequestOptions} options
+		 */
+		this.doAction( 'fullPostRequest', objects, request );
+		jQuery.get( request.url, function( content ) {
+			var filter = {
+				content: content
+			};
+			/**
+			 * Loading full post content.
+			 * @name GeoMashup#fullPostLoad
+			 * @event
+			 * @param {Array} objects Objects included in the request
+			 * @param {ContentFilter} filter
+			 */
+			GeoMashup.doAction( 'fullPostLoad', objects, filter );
+			cache.html = filter.content;
+			jQuery( GeoMashup.getShowPostElement() ).html( filter.content );
+			/**
+			 * The full post display has changed.
+			 * @name GeoMashup#fullPostChanged
+			 * @event
+			 */
+			GeoMashup.doAction( 'fullPostChanged' );
+		} );
+	}
+};
+
+GeoMashup.createTermLine = function( taxonomy, term_id, term_data ) {
+
+	// Polylines are close, but the openlayers implementation at least cannot hide or remove a polyline
+	var options = {
+		color: term_data.color,
+		width: 5,
+		opacity: 0.5,
+		visible: true,
+		taxonomy: taxonomy,
+		term_id: term_id
+	};
+
+	term_data.line = new mxn.Polyline( term_data.points );
+	/**
+	 * A term line was created.
+	 * @name GeoMashup#termLine
+	 * @event
+	 * @param {Polyline} line
+	 * @param {String} taxonomy
+	 * @param {String} term_id
+	 * @param {Object} term_data Other properties of the term
+	 */
+	this.doAction( 'termLine', term_data.line, taxonomy, term_id, term_data );
+	/**
+	 * A category line was created.
+	 * @name GeoMashup#categoryLine
+	 * @event
+	 * @deprecated Use GeoMashup#termLine
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Polyline} line
+	 */
+	this.doAction( 'categoryLine', this.opts, term_data.line );
+
+	/**
+	 * A term line will be added with the given options.
+	 * @name GeoMashup#termLineOptions
+	 * @event
+	 * @param {Object} options Modifiable <a href="http://mapstraction.github.com/mxn/build/latest/docs/symbols/mxn.Polyline.html#addData">Mapstraction</a>
+	 *   or <a href="http://code.google.com/apis/maps/documentation/javascript/v2/reference.html#GPolylineOptions">Google</a> Polyline options
+	 * @param {String} taxonomy
+	 * @param {String} term_id
+	 * @param {Object} term_data Other properties of the term
+	 */
+	this.doAction( 'termLineOptions', options, taxonomy, term_id, term_data );
+
+	/**
+	 * A term line will be added with the given options.
+	 * @name GeoMashup#categoryLineOptions
+	 * @event
+	 * @deprecated Use GeoMashup#termLineOptions
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Object} options Modifiable <a href="http://mapstraction.github.com/mxn/build/latest/docs/symbols/mxn.Polyline.html#addData">Mapstraction</a>
+	 *   or <a href="http://code.google.com/apis/maps/documentation/javascript/v2/reference.html#GPolylineOptions">Google</a> Polyline options
+	 */
+	this.doAction( 'categoryLineOptions', this.opts, options );
+
+	this.map.addPolylineWithData( term_data.line, options );
+
+	if ( this.map.getZoom() > term_data.max_line_zoom ) {
+		this.hideLine( term_data.line );
+	}
+};
+
+GeoMashup.openInfoWindow = function( marker ) {
+	var request,
+		cache,
+		object_ids,
+		i,
+		object_element,
+		point = marker.location;
+
+	if ( this.open_window_marker && !this.opts.multiple_info_windows ) {
+		this.open_window_marker.closeBubble();
+	}
+	object_ids = this.getOnObjectIDs( this.getObjectsAtLocation( point ) );
+	cache = this.locationCache( point, 'info-window-' + object_ids.join( ',' ) );
+	if ( cache.html ) {
+		marker.setInfoBubble( cache.html );
+		marker.openBubble();
+	} else {
+		marker.setInfoBubble( '<div align="center"><img src="' + this.opts.url_path + '/images/busy_icon.gif" alt="Loading..." /></div>' );
+		marker.openBubble();
+		this.open_window_marker = marker;
+		// Collect object ids
+		// Do an AJAX query to get content for these objects
+		request = {
+			url: this.geo_query_url + '&object_name=' + this.opts.object_name + '&object_ids=' + object_ids.join( ',' )
+		};
+		/**
+		 * A marker's info window content is being requested.
+		 * @name GeoMashup#markerInfoWindowRequest
+		 * @event
+		 * @param {Marker} marker
+		 * @param {AjaxRequestOptions} request Modifiable property: url
+		 */
+		this.doAction( 'markerInfoWindowRequest', marker, request );
+		jQuery.get( request.url, function( content ) {
+			var filter = {
+				content: content
+			};
+			marker.closeBubble();
+			/**
+			 * A marker info window content is being loaded.
+			 * @name GeoMashup#markerInfoWindowLoad
+			 * @event
+			 * @param {Marker} marker
+			 * @param {ContentFilter} filter Modifiable property: content
+			 */
+			GeoMashup.doAction( 'markerInfoWindowLoad', marker, filter );
+			cache.html = GeoMashup.parentizeLinksMarkup( filter.content );
+			marker.setInfoBubble( cache.html );
+			marker.openBubble();
+		} );
+	}
+};
+
+GeoMashup.closeInfoWindow = function( marker ) {
+	marker.closeBubble();
+};
+
+GeoMashup.addGlowMarker = function( marker ) {
+	var point = marker.location,
+		glow_options = {
+			clickable: true,
+			icon: this.opts.url_path + '/images/mm_36_glow.png',
+			iconSize: [30, 36],
+			iconAnchor: [15, 36]
+		};
+
+	if ( this.glow_marker ) {
+		this.removeGlowMarker();
+	}
+	/**
+	 * A highlight "glow" marker is being created.
+	 * @name GeoMashup#glowMarkerIcon
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Object} glow_options Modifiable <a href="http://mapstraction.github.com/mxn/build/latest/docs/symbols/mxn.Marker.html#addData">Mapstraction</a>
+	 *   or <a href="http://code.google.com/apis/maps/documentation/javascript/v2/reference.html#GMarkerOptions">Google</a> marker options
+	 */
+	this.doAction( 'glowMarkerIcon', this.opts, glow_options );
+	this.glow_marker = new mxn.Marker( point );
+	this.glow_marker.addData( glow_options );
+	this.glow_marker.click.addHandler( function() {
+		GeoMashup.deselectMarker();
+	} );
+	this.map.addMarker( this.glow_marker );
+};
+
+GeoMashup.removeGlowMarker = function() {
+	if ( this.glow_marker ) {
+		this.glow_marker.hide();
+		this.map.removeMarker( this.glow_marker );
+		this.glow_marker = null;
+	}
+};
+
+GeoMashup.hideAttachments = function() {
+	var i,
+		j,
+		obj;
+
+	/* No removeOverlay (yet)
+	 for ( i = 0; i < this.open_attachments.length; i += 1 ) {
+	 this.map.removeOverlay( this.open_attachments[i] );
+	 }
+	 this.open_attachments = [];
+	 */
+};
+
+GeoMashup.showMarkerAttachments = function( marker ) {
+	var object_ids,
+		uncached_ids = [];
+
+	this.hideAttachments();
+	// check support
+	object_ids = this.getOnObjectIDs( this.getMarkerObjects( marker ) );
+	jQuery.each( object_ids, function( i, id ) {
+		var cached_attachments = GeoMashup.locationCache( marker.location, 'attachments-' + id );
+		if ( cached_attachments.urls ) {
+			jQuery.each( cached_attachments.urls, function( j, url ) {
+				GeoMashup.open_attachments.push( url );
+				GeoMashup.map.addOverlay( url );
+			} );
+		} else {
+			uncached_ids.push( id );
+		}
+	} );
+	// Request any uncached attachments
+	jQuery.each( uncached_ids, function( i, id ) {
+		var ajax_params = {
+			action: 'geo_mashup_kml_attachments'
+		};
+		ajax_params.post_ids = id;
+		jQuery.getJSON( GeoMashup.opts.ajaxurl + '?callback=?', ajax_params, function( data ) {
+			var cached_attachments = GeoMashup.locationCache( marker.location, 'attachments-' + id );
+			if ( !cached_attachments.urls ) {
+				cached_attachments.urls = [];
+			}
+			jQuery.each( data, function( j, url ) {
+				cached_attachments.urls.push( url );
+				GeoMashup.open_attachments.push( url );
+				GeoMashup.map.addOverlay( url );
+			} );
+		} );
+	} );
+};
+
+GeoMashup.addObjectIcon = function( obj ) {
+
+	// Back compat
+	if ( typeof customGeoMashupCategoryIcon === 'function' && obj.terms && obj.terms.hasOwnProperty( 'category' ) ) {
+		obj.icon = customGeoMashupCategoryIcon( GeoMashup.opts, obj.terms.category );
+	}
+
+	if ( !obj.icon ) {
+
+		jQuery.each( obj.terms, function( taxonomy, terms ) {
+			var single_icon;
+
+			if ( terms.length > 1 ) {
+
+				obj.icon = GeoMashup.clone( GeoMashup.multiple_term_icon );
+				return false;
+
+			} else if ( terms.length === 1 ) {
+
+				single_icon = GeoMashup.term_manager.getTermData( taxonomy, terms[0], 'icon' );
+
+				if ( obj.icon && obj.icon.image !== single_icon.image ) {
+
+					// We have two different icons in different taxonomies
+					obj.icon = GeoMashup.clone( GeoMashup.multiple_term_icon );
+					return false;
+
+				} else {
+
+					obj.icon = GeoMashup.clone( single_icon );
+
+				}
+
+			}
+
+		} );
+
+		if ( !obj.icon ) {
+			obj.icon = GeoMashup.colorIcon( 'red' );
+		}
+
+		/**
+		 * An icon is being assigned to an object.
+		 * @name GeoMashup#objectIcon
+		 * @event
+		 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+		 * @param {GeoMashupObject} object Object whose icon property was set.
+		 */
+		this.doAction( 'objectIcon', GeoMashup.opts, obj );
+	}
+};
+
+GeoMashup.createMarker = function( point, obj ) {
+	var marker,
+		marker_opts;
+
+	if ( !obj.icon ) {
+		this.addObjectIcon( obj );
+	}
+	marker_opts = {
+		label: obj.title,
+		icon: obj.icon.image,
+		iconSize: obj.icon.iconSize,
+		iconShadow: obj.icon.iconShadow,
+		iconAnchor: obj.icon.iconAnchor,
+		iconShadowSize: obj.icon.shadowSize,
+		visible: true
+	};
+	/**
+	 * A marker is being created for an object. Use this to change marker
+	 * options, but if you just want to assign an icon to an object, use the
+	 * objectIcon action.
+	 *
+	 * @name GeoMashup#objectMarkerOptions
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Object} glow_options Modifiable <a href="http://mapstraction.github.com/mxn/build/latest/docs/symbols/mxn.Marker.html#addData">Mapstraction</a>
+	 *   or <a href="http://code.google.com/apis/maps/documentation/javascript/v2/reference.html#GMarkerOptions">Google</a> marker options
+	 * @param {GeoMashupObject} object
+	 */
+	this.doAction( 'objectMarkerOptions', this.opts, marker_opts, obj );
+	marker = new mxn.Marker( point );
+	marker.addData( marker_opts );
+
+	marker.click.addHandler( function() {
+		// Toggle marker selection
+		if ( marker === GeoMashup.selected_marker ) {
+			GeoMashup.deselectMarker();
+		} else {
+			GeoMashup.selectMarker( marker );
+		}
+	} );
+
+	/**
+	 * A marker was created.
+	 * @name GeoMashup#marker
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Marker} marker
+	 */
+	this.doAction( 'marker', this.opts, marker );
+
+	return marker;
+};
+
+GeoMashup.clickObjectMarker = function( object_id, try_count ) {
+	var obj = this.objects[object_id];
+
+	if ( !GeoMashup.isObjectOn( obj ) ) {
+		return false;
+	}
+
+	if ( typeof try_count === 'undefined' ) {
+		try_count = 1;
+	}
+	if ( obj && obj.marker && try_count < 4 ) {
+		// openlayers/mxn seems to have trouble displaying an infobubble right away
+		if ( try_count < 2 ) {
+			try_count += 1;
+			setTimeout( function() {
+				GeoMashup.clickObjectMarker( object_id, try_count );
+			}, 1000 );
+		} else {
+			obj.marker.click.fire();
+		}
+	}
+};
+
+GeoMashup.colorIcon = function( color_name ) {
+	var icon = this.clone( this.base_color_icon );
+	icon.image = this.opts.url_path + '/images/mm_36_' + color_name + '.png';
+	return icon;
+};
+
+GeoMashup.getMarkerLatLng = function( marker ) {
+	return marker.location;
+};
+
+GeoMashup.hideMarker = function( marker ) {
+	if ( marker === this.selected_marker ) {
+		this.deselectMarker();
+	}
+	marker.hide();
+};
+
+GeoMashup.showMarker = function( marker ) {
+	marker.show();
+};
+
+GeoMashup.hideLine = function( line ) {
+	try {
+		line.hide();
+	} catch ( e ) {
+		this.map.removePolyline( line );
+	}
+	line.setAttribute( 'visible', false );
+};
+
+GeoMashup.showLine = function( line ) {
+	try {
+		line.show();
+	} catch ( e ) {
+		this.map.addPolyline( line );
+	}
+	line.setAttribute( 'visible', true );
+};
+
+GeoMashup.isLineVisible = function( line ) {
+	return line.getAttribute( 'visible' );
+};
+
+GeoMashup.newLatLng = function( lat, lng ) {
+	return new mxn.LatLonPoint( lat, lng );
+};
+
+GeoMashup.extendLocationBounds = function( latlng ) {
+	if ( this.location_bounds ) {
+		this.location_bounds.extend( latlng );
+	} else {
+		this.location_bounds = new mxn.BoundingBox( latlng, latlng );
+	}
+};
+
+GeoMashup.addMarkers = function( markers ) {
+	this.forEach( markers, function( i, marker ) {
+		this.map.addMarker( marker );
+	} );
+};
+
+GeoMashup.makeMarkerMultiple = function( marker ) {
+	var plus_image,
+		original_image;
+	if ( typeof customGeoMashupMultiplePostImage === 'function' ) {
+		plus_image = customGeoMashupMultiplePostImage( this.opts, marker );
+	}
+	if ( !plus_image ) {
+		plus_image = this.opts.url_path + '/images/mm_36_plus.png';
+	}
+	original_image = marker.iconUrl;
+	marker.setIcon( plus_image );
+	/**
+	 * A marker representing multiple objects was created.
+	 * @name GeoMashup#multiObjectMarker
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Marker} marker
+	 */
+	this.doAction( 'multiObjectMarker', this.opts, marker );
+	/**
+	 * A marker representing multiple objects was created with this icon.
+	 * @name GeoMashup#multiObjectIcon
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {String} plus_image Icon URL
+	 */
+	this.doAction( 'multiObjectIcon', this.opts, plus_image );
+	if ( marker.onmap && marker.iconUrl !== original_image ) {
+		if ( typeof this.clusterer !== "undefined" ) {
+			this.clusterer.removeMarker( marker.proprietary_marker );
+		}
+		this.map.removeMarker( marker );
+
+		this.map.addMarker( marker );
+		if ( typeof this.clusterer !== "undefined" ) {
+			this.clusterer.addMarker( marker.proprietary_marker );
+		}
+	}
+};
+
+GeoMashup.setMarkerImage = function( marker, image_url ) {
+	if ( marker.iconUrl !== image_url ) {
+		marker.setIcon( image_url );
+		if ( marker.onmap ) {
+			if ( typeof this.clusterer !== "undefined" ) {
+				this.clusterer.removeMarker( marker.proprietary_marker );
+			}
+			this.map.removeMarker( marker );
+
+			this.map.addMarker( marker );
+			if ( typeof this.clusterer !== "undefined" ) {
+				this.clusterer.addMarker( marker.proprietary_marker );
+			}
+		}
+	}
+};
+
+GeoMashup.autoZoom = function() {
+	var map = this.map;
+	var limitZoom = function() {
+		var max_zoom = parseInt( GeoMashup.opts.auto_zoom_max, 10 );
+
+		if ( map.getZoom() > max_zoom ) {
+			map.setZoom( max_zoom );
+		}
+		map.changeZoom.removeHandler( limitZoom );
+	};
+	if ( typeof this.opts.auto_zoom_max !== 'undefined' ) {
+		this.map.changeZoom.addHandler( limitZoom );
+	}
+	this.map.autoCenterAndZoom();
+};
+
+GeoMashup.isMarkerVisible = function( marker ) {
+	var map_bounds;
+	try {
+		map_bounds = this.map.getBounds();
+	} catch ( e ) {
+		// No bounds available yet, no markers are visible
+		return false;
+	}
+	return (marker.getAttribute( 'visible' ) && map_bounds && map_bounds.contains( marker.location ) );
+};
+
+GeoMashup.centerMarker = function( marker, zoom ) {
+	if ( typeof zoom === 'number' ) {
+		this.map.setCenterAndZoom( marker.location, zoom );
+	} else {
+		this.map.setCenter( marker.location, {}, true );
+	}
+};
+
+GeoMashup.createMap = function( container, opts ) {
+	var i,
+		type_num,
+		center_latlng,
+		map_opts,
+		map_types,
+		request,
+		url,
+		objects,
+		point,
+		marker_opts,
+		clusterer_opts,
+		single_marker,
+		ov,
+		credit_div,
+		initial_zoom = 1,
+		controls = {},
+		filter = {};
+
+	this.container = container;
+	this.base_color_icon = {};
+	this.base_color_icon.image = opts.url_path + '/images/mm_36_black.png';
+	this.base_color_icon.iconShadow = '';
+	this.base_color_icon.iconSize = [30, 36];
+	this.base_color_icon.shadowSize = [0, 0];
+	this.base_color_icon.iconAnchor = [15, 36];
+	this.base_color_icon.infoWindowAnchor = [15, 2];
+	this.multiple_term_icon = this.clone( this.base_color_icon );
+	this.multiple_term_icon.image = opts.url_path + '/images/mm_36_mixed.png';
+
+	// Falsify options to make tests simpler
+	this.forEach( opts, function( key, value ) {
+		if ( 'false' === value || 'FALSE' === value ) {
+			opts[key] = false;
+		}
+	} );
+
+	// See if we have access to a parent frame
+	this.have_parent_access = false;
+	try {
+		if ( typeof parent === 'object' ) {
+			// Try access, throws an exception if prohibited
+			parent.document.getElementById( 'bogus-test' );
+			// Access worked
+			this.have_parent_access = true;
+		}
+	} catch ( parent_exception ) {
+	}
+
+	// For now, siteurl is the home url
+	opts.home_url = opts.siteurl;
+
+	map_types = {
+		'G_NORMAL_MAP': mxn.Mapstraction.ROAD,
+		'G_SATELLITE_MAP': mxn.Mapstraction.SATELLITE,
+		'G_HYBRID_MAP': mxn.Mapstraction.HYBRID,
+		'G_PHYSICAL_MAP': mxn.Mapstraction.PHYSICAL
+	};
+
+	if ( typeof opts.map_type === 'string' ) {
+		if ( map_types[opts.map_type] ) {
+			opts.map_type = map_types[opts.map_type];
+		} else {
+			type_num = parseInt( opts.map_type, 10 );
+			if ( isNaN( type_num ) || type_num > 2 ) {
+				opts.map_type = map_types.G_NORMAL_MAP;
+			} else {
+				opts.map_type = type_num;
+			}
+		}
+	} else if ( typeof opts.map_type === 'undefined' ) {
+		opts.map_type = map_types.G_NORMAL_MAP;
+	}
+	this.map = new mxn.Mapstraction( this.container, opts.map_api );
+	map_opts = {
+		enableDragging: true
+	};
+	map_opts.enableScrollWheelZoom = (opts.enable_scroll_wheel_zoom ? true : false );
+
+	if ( typeof this.map.enableGeoMashupExtras === 'function' ) {
+		this.map.enableGeoMashupExtras();
+	}
+	/**
+	 * The map options are being set.
+	 * @name GeoMashup#mapOptions
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Object} map_opts Modifiable <a href="http://mapstraction.github.com/mxn/build/latest/docs/symbols/mxn.Mapstraction.html#options">Mapstraction</a>
+	 *   or <a href="http://code.google.com/apis/maps/documentation/javascript/v2/reference.html#GMapOptions">Google</a> map options
+	 */
+	this.doAction( 'mapOptions', opts, map_opts );
+	this.map.setOptions( map_opts );
+	this.map.setCenterAndZoom( new mxn.LatLonPoint( 0, 0 ), 0 );
+
+	/**
+	 * The map was created.
+	 * @name GeoMashup#newMap
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Map} map
+	 */
+	this.doAction( 'newMap', opts, this.map );
+
+	// Create the loading spinner icon and show it
+	this.spinner_div = document.createElement( 'div' );
+	this.spinner_div.innerHTML = '<div id="gm-loading-icon" style="-moz-user-select: none; z-index: 100; position: absolute; left: ' + (jQuery( this.container ).width() / 2 ) + 'px; top: ' + (jQuery( this.container ).height() / 2 ) + 'px;">' + '<img style="border: 0px none ; margin: 0px; padding: 0px; width: 16px; height: 16px; -moz-user-select: none;" src="' + opts.url_path + '/images/busy_icon.gif"/></a></div>';
+	this.showLoadingIcon();
+	this.map.load.addHandler( function() {
+		GeoMashup.hideLoadingIcon();
+	} );
+
+	if ( !opts.object_name ) {
+		opts.object_name = 'post';
+	}
+	this.opts = opts;
+	filter.url = opts.siteurl + (opts.siteurl.indexOf( '?' ) > 0 ? '&' : '?' ) + 'geo_mashup_content=geo-query&map_name=' + encodeURIComponent( opts.name );
+	if ( opts.lang && filter.url.indexOf( 'lang=' ) === -1 ) {
+		filter.url += '&lang=' + encodeURIComponent( opts.lang );
+	}
+
+	/**
+	 * The base URL used for geo queries is being set.
+	 * @name GeoMashup#geoQueryUrl
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Object} filter Mofiable property: url
+	 */
+	this.doAction( 'geoQueryUrl', this.opts, filter );
+	this.geo_query_url = filter.url;
+
+	this.map.changeZoom.addHandler( function() {
+		GeoMashup.adjustZoom();
+		GeoMashup.adjustViewport();
+	}, this );
+	this.map.endPan.addHandler( function() {
+		GeoMashup.adjustViewport();
+	}, this );
+
+	// No clustering available
+
+	if ( opts.zoom !== 'auto' && typeof opts.zoom === 'string' ) {
+		initial_zoom = parseInt( opts.zoom, 10 );
+	} else {
+		initial_zoom = opts.zoom;
+	}
+
+	if ( opts.load_kml ) {
+		try {
+			// Some servers (Google) don't like HTML entities in URLs
+			opts.load_kml = jQuery( '<div/>' ).html( opts.load_kml ).text();
+			if ( initial_zoom === 'auto' ) {
+				this.map.addOverlay( opts.load_kml, true );
+			} else {
+				this.map.addOverlay( opts.load_kml );
+			}
+		} catch ( e ) {
+			// Probably not implemented
+		}
+	}
+
+	if ( this.term_manager ) {
+		this.term_manager.load();
+	}
+
+	try {
+		this.map.setMapType( opts.map_type );
+	} catch ( map_type_ex ) {
+		// Probably not implemented
+	}
+	if ( initial_zoom !== 'auto' ) {
+		if ( opts.center_lat && opts.center_lng ) {
+			// Use the center from options
+			this.map.setCenterAndZoom( new mxn.LatLonPoint( parseFloat( opts.center_lat ), parseFloat( opts.center_lng ) ), initial_zoom );
+		} else if ( opts.object_data && opts.object_data.objects[0] ) {
+			center_latlng = new mxn.LatLonPoint( parseFloat( opts.object_data.objects[0].lat ), parseFloat( opts.object_data.objects[0].lng ) );
+			this.map.setCenterAndZoom( center_latlng, initial_zoom );
+		} else {
+			// Center on the most recent located object
+			url = this.geo_query_url + '&limit=1';
+			if ( opts.map_cat ) {
+				url += '&map_cat=' + opts.map_cat;
+			}
+			jQuery.getJSON( url, function( objects ) {
+				if ( objects.length > 0 ) {
+					center_latlng = new mxn.LatLonPoint( parseFloat( objects[0].lat ), parseFloat( objects[0].lng ) );
+					this.map.setCenterAndZoom( center_latlng, initial_zoom );
+				}
+			} );
+		}
+	}
+
+	this.location_bounds = null;
+
+	if ( opts.map_content === 'single' ) {
+		if ( opts.object_data && opts.object_data.objects.length && !opts.load_kml ) {
+			marker_opts = {
+				visible: true
+			};
+			if ( typeof customGeoMashupSinglePostIcon === 'function' ) {
+				marker_opts = customGeoMashupSinglePostIcon( this.opts );
+			}
+			if ( !marker_opts.image ) {
+				marker_opts = this.colorIcon( 'red' );
+				marker_opts.icon = marker_opts.image;
+			}
+			/**
+			 * A single map marker is being created with these options
+			 * @name GeoMashup#singleMarkerOptions
+			 * @event
+			 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+			 * @param {Object} marker_opts Mofifiable Mapstraction or Google marker options
+			 */
+			this.doAction( 'singleMarkerOptions', this.opts, marker_opts );
+			single_marker = new mxn.Marker( new mxn.LatLonPoint( parseFloat( opts.object_data.objects[0].lat ), parseFloat( opts.object_data.objects[0].lng ) ) );
+			this.map.addMarkerWithData( single_marker, marker_opts );
+			/**
+			 * A single map marker was added to the map.
+			 * @name GeoMashup#singleMarker
+			 * @event
+			 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+			 * @param {Marker} single_marker
+			 */
+			this.doAction( 'singleMarker', this.opts, single_marker );
+		}
+	} else if ( opts.object_data ) {
+		this.addObjects( opts.object_data.objects, true );
+	} else {
+		// Request objects near visible range first
+		this.requestObjects( true );
+
+		// Request all objects
+		this.requestObjects( false );
+	}
+
+	if ( 'GSmallZoomControl' === opts.map_control || 'GSmallZoomControl3D' === opts.map_control ) {
+		controls.zoom = 'small';
+	} else if ( 'GSmallMapControl' === opts.map_control ) {
+		controls.zoom = 'small';
+		controls.pan = true;
+	} else if ( 'GLargeMapControl' === opts.map_control || 'GLargeMapControl3D' === opts.map_control ) {
+		controls.zoom = 'large';
+		controls.pan = true;
+	}
+
+	if ( opts.add_map_type_control ) {
+		controls.map_type = true;
+	}
+
+	if ( opts.add_overview_control ) {
+		controls.overview = true;
+	}
+
+	if ( opts.enable_street_view !== false ) {
+		controls.street_view = true;
+	}
+	this.map.addControls( controls );
+
+	if ( opts.add_map_type_control && typeof this.map.setMapTypes === 'function' ) {
+		if ( typeof opts.add_map_type_control === 'string' ) {
+			opts.add_map_type_control = opts.add_map_type_control.split( /\s*,\s*/ );
+			if ( typeof map_types[opts.add_map_type_control[0]] === 'undefined' ) {
+				// Convert the old boolean value to a default array
+				opts.add_map_type_control = ['G_NORMAL_MAP', 'G_SATELLITE_MAP', 'G_PHYSICAL_MAP'];
+			}
+		}
+		// Convert to mapstraction types
+		opts.mxn_map_type_control = [];
+		for ( i = 0; i < opts.add_map_type_control.length; i += 1 ) {
+			opts.mxn_map_type_control.push( map_types[opts.add_map_type_control[i]] );
+		}
+		this.map.setMapTypes( opts.mxn_map_type_control );
+	}
+
+	this.map.load.addHandler( function() {
+		GeoMashup.updateVisibleList();
+	} );
+	if ( typeof customizeGeoMashupMap === 'function' ) {
+		customizeGeoMashupMap( this.opts, this.map );
+	}
+	if ( typeof customizeGeoMashup === 'function' ) {
+		customizeGeoMashup( this );
+	}
+	this.hideLoadingIcon();
+	/**
+	 * The map has loaded.
+	 * @name GeoMashup#loadedMap
+	 * @event
+	 * @param {GeoMashupOptions} properties Geo Mashup configuration data
+	 * @param {Map} map
+	 */
+	this.doAction( 'loadedMap', this.opts, this.map );
+
+};

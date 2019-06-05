@@ -1,48 +1,58 @@
 === Plugin Name ===
+
 Contributors: welaika, stefano.verna
 Donate link: https://github.com/welaika/wordless
-Tags: sass, compass, haml, rails
+Tags: sass, pug, jade, webpack, scss, npm, yarn
 Requires at least: 3.0
-Tested up to: 3.2
-Stable tag: 0.3
-
-Wordless dramatically speeds up and enhances your custom themes
-creation, thanks to Sass, Compass, Haml and Coffeescript.
-
-== Description ==
+Tested up to: 4.9.8
+Stable tag: 2.4.2
+License: The MIT License
+License URI: http://www.opensource.org/licenses/MIT
 
 Wordless is an opinionated WordPress plugin that dramatically speeds up and enhances your custom themes creation. Some of its features are:
 
-* A structured, organized and clean [theme organization](https://github.com/welaika/wordless/tree/master/wordless/theme_builder/vanilla_theme) (taken directly from Rails);
-* Ability to create a new theme skeleton directly within the WordPress backend interface;
-* Ability to write PHP code using the beautiful [Haml templating system](http://haml-lang.com/);
-* Ability to write CSS stylesheets using the awesome [Sass syntax](sass-lang.com) and the [Compass framework](http://compass-style.org/);
-* Ability to write [Coffeescript](http://jashkenas.github.com/coffee-script/) instead of the boring, oldish Javascript;
-* A growing set of handy and documented helper functions ready to be used within your views;
+* A structured, organized and clean [theme organization](https://github.com/welaika/wordless/tree/master/wordless/theme_builder/vanilla_theme)
+* Bootstrap a new theme directly within wp-cli
+* Write PHP templates with [Pug templating system](https://github.com/pug-php/pug)
+* Write CSS stylesheets using the awesome [Sass syntax](http://sass-lang.com)
+* Write Javascript logic in [Coffeescript](http://jashkenas.github.com/coffee-script/)
+* A growing set of handy and documented PHP helper functions ready to be used within your views
+* Development workflow backed by [WebPack](https://github.com/webpack/webpack), [BrowserSync](https://www.browsersync.io/) (with live reload), [WP-CLI](http://wp-cli.org/), [Yarn](https://yarnpkg.com/en/). All the standards you already know, all the customizations you may need.
 
-You can always find the latest version of this plugin, as well as a
-detailed README, on [Github](https://github.com/welaika/wordless).
+[![Build Status](https://secure.travis-ci.org/welaika/wordless.png)](http://travis-ci.org/welaika/wordless)
+[![Documentation Status](https://readthedocs.org/projects/wordless/badge/?version=latest)](https://wordless.readthedocs.io/en/latest/?badge=latest)
 
-== Installation ==
+## Getting started
 
-1. Your development machine needs a ruby environment, and the [compass](https://github.com/chriseppstein/compass), [sprockets](https://github.com/sstephenson/sprockets) and [coffee-script](https://github.com/josh/ruby-coffee-script) gem. See below to see how to setup WordPress on your machine using RVM;
-2. The production machine doesn't need any extra-dependencies, as all the compiled assets automatically get statically backend by Wordless;
-3. [Download the Wordless plugin](https://github.com/welaika/wordless/zipball/master), drop it in the `wp-content/plugins` directory and enable it from the WP "Plugins" section;
-4. Enable the use of nice permalinks from the WP "Settings > Permalink" section. That is, we need the .htaccess file;
-5. Create a brand new Wordless theme directly within the WP backend, from the WP "Appearance > New Wordless Theme" section;
-6. Specify the path of your ruby executables, you can do it within the WP "Appearance > Wordless preferences" menu voice.
+**Prerequisites**
+
+1. Install WP-CLI http://wp-cli.org/#installing
+2. Install global packages from NPM: `npm install -g foreman yarn`
+
+Once done, considered you have a standard WordPress installation already up and running and you are in its root directory:
+
+1. `wp plugin install wordless`
+2. `wp plugin activate wordless`
+3. `wp wordless theme create mybrandnewtheme`
+4. `cd wp-content/themes/mybrandnewtheme`
+5. `yarn install`
+
+Now you have all you need to start developing 💻; just be sure to be in your theme directory and run
+
+`yarn run server`
+
+webpack, php server and your browser will automatically come up and serve your needs :)
+
+Read more on [GitHub](https://github.com/welaika/wordless) and on
+[Read the Docs](https://wordless.readthedocs.io/en/latest/)
 
 
-**RVM (recommended setup)**
+== Changelog ==
 
-It's recommended to use [RVM](http://rvm.beginrescueend.com) to handle ruby gems. Type the following from your terminal:
+You can find the changelog @ https://github.com/welaika/wordless/releases
 
-    rvm use 1.8.7
-    rvm gemset create wordless
-    rvm use 1.8.7@wordless
-    gem install sprockets compass coffee-script
-    rvm wrapper 1.8.7@wordless wordless compass ruby
+== Upgrade Notice ==
 
-Now you should be able to know the location of your RVM-wrapped ruby executables using `which wordless_ruby` and `which wordless_compass`. Write them down into the `config/initializers/wordpress_preferences.php` file.
+= 0.5 =
 
-
+* WARNING! Version 0.5 is not backward compatible! Wordless had always used `yield()` function in its template; starting from some point yield() become a reseved PHP function, so we had to rename it in Wordless code. If you get errors search and replace `yield()` inside the pugin directory with `wl_yield()`. Sorry for the inconvenient.
