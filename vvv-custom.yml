@@ -1,0 +1,18 @@
+###########################
+#                         #
+# This is just a template #
+#                         #
+###########################
+
+---
+
+sites:
+  geobeni:
+    vm_dir: /srv/www/geobeni
+    local_dir: /home/matteo/src/geobeni
+    hosts:
+      - geobeni.test
+    custom:
+      site_title: Geoblog
+      wp_locale: it_IT
+
