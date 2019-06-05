@@ -1742,8 +1742,7 @@ sf_d($one_field_slug, 'one_field_slug');*/
 							$meta_box_title = $this->get_string("Field group name, " . $field_group_to_add["slug"], $field_group_to_add["name"] );
 							$meta_box_context = $one_post_connector_field_group["context"];
 							$meta_box_priority = $one_post_connector_field_group["priority"];
-							// @todo: could we just create an anonymous function the "javascript way" instead? does that require a too new version of PHP?
-							$meta_box_callback = create_function ("", "global \$sf; \$sf->meta_box_output({$one_post_connector_field_group["id"]}, $post->ID); ");
+							$meta_box_callback = function () use($one_post_connector_field_group) { global $sf, $post; $sf->meta_box_output($one_post_connector_field_group["id"], $post->ID); };
 
 							add_meta_box( $meta_box_id, $meta_box_title, $meta_box_callback, $post_type, $meta_box_context, $meta_box_priority );
 
