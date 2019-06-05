@@ -1,9 +1,10 @@
 wp-config.php
 Movefile
 *.sql
-wp-content/themes/geoblog/tmp/*
-!wp-content/themes/geoblog/tmp/.gitkeep
-wp-content/themes/geoblog/theme/.sass-cache/
-wp-content/uploads/*
+public_html/wp-content/themes/geoblog/tmp/*
+!public_html/wp-content/themes/geoblog/tmp/.gitkeep
+public_html/wp-content/themes/geoblog/theme/.sass-cache/
+public_html/wp-content/uploads/*
 .DS_Store
 .sass-cache
+log/*
