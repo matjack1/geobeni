@@ -8,3 +8,4 @@ public_html/wp-content/uploads/*
 .DS_Store
 .sass-cache
 log/*
+provision/vvv-nginx.conf
