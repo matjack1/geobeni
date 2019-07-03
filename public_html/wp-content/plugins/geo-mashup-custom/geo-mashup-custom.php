@@ -52,7 +52,7 @@ class GeoMashupCustom {
 		if ( $dir_handle = @ opendir( $this->dir_path ) ) {
 			$self_file = basename( __FILE__ );
 			while ( ( $custom_file = readdir( $dir_handle ) ) !== false ) {
-				if ( $self_file != $custom_file && !strpos( $custom_file, '-sample' ) && !is_dir( $custom_file ) ) {
+				if ( $self_file != $custom_file && !strpos( $custom_file, '-sample' ) && $custom_file != '..' && !is_dir( $custom_file ) ) {
 					$this->files[$custom_file] = trailingslashit( $this->url_path ) . $custom_file;
 				}
 			}
