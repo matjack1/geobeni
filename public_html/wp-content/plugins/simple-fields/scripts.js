@@ -246,7 +246,7 @@ var simple_fields_file_field = (function($) {
 					tiny_init.mode = 'exact';
 					tiny_init.elements = id;
 					tiny_init.theme_advanced_resizing = true;
-					new_ed = new tinymce.Editor(id, tiny_init);
+					new_ed = new tinymce.Editor(id, tiny_init, tinymce.EditorManager);
 					new_ed.render();
 
 					visual_tab = jQuery("#"+id+"-tmce");

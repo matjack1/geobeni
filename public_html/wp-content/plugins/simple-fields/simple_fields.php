@@ -1336,7 +1336,7 @@ sf_d($one_field_slug, 'one_field_slug');*/
 
 									// only keep scripts. works pretty ok, but we get some stray text too, so use preg match to get only script tags
 									// wp_kses also replaces & > &amp, which is not good in scripts
-									$footer_scripts = $this->wp_kses( $footer_scripts, array("script" => array() ), array(), true );
+									// $footer_scripts = $this->wp_kses( $footer_scripts, array("script" => array() ), array(), true );
 
 									preg_match_all('/<script>(.*)<\/script>/msU', $footer_scripts, $matches);
 
