@@ -39,7 +39,7 @@ class GeoMashupCustom {
 	/**
 	 * PHP4 Constructor
 	 */
-	function GeoMashupCustom() {
+	function __construct() {
 
 		// Initialize members
 		$this->dir_path = dirname( __FILE__ );
