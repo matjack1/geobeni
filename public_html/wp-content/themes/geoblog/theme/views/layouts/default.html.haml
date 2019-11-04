@@ -3,7 +3,7 @@
   %head= render_partial("layouts/head")
     %link{:href => "\favicon.ico", :rel => "icon"}
     %title Geoblog
-  %body(class="#{body_classes()} no-overflow")
+  %body(class="#{body_classes()}")
     .page-wrapper
       = render_partial("layouts/header")
       %section.site-content= wl_yield()
